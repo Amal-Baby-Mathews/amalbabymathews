@@ -1,26 +1,50 @@
 <!DOCTYPE html>
+<link rel="stylesheet" href="styles.css">
 <html lang="en">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Personal Website</title>
-    <link rel="stylesheet" href="styles.css">
+    <title>Amal Baby Mathews</title>
+    <style>
+        body {
+            cursor: none;
+        }
+
+        .fancy-cursor {
+            position: absolute;
+            width: 30px;
+            height: 30px;
+            border-radius: 50%;
+            background-color: rgba(255, 255, 255, 0.3);
+            pointer-events: none;
+            z-index: 999;
+            transition: transform 0.3s ease;
+        }
+
+        .fancy-cursor.hover {
+            transform: scale(1.5);
+            background-color: rgba(255, 255, 255, 0.5);
+        }
+
+        /* Additional styles for the website */
+        /* ... */
+    </style>
 </head>
 <body>
+    <div class="fancy-cursor"></div>
+
     <header>
-        <h1>Welcome to my website</h1>
+        <h1>Welcome to Amal's Website</h1>
         <nav>
             <ul>
-                <li><a href="#about">About</a></li>
-                <li><a href="#projects">Projects</a></li>
-                <li><a href="#contact">Contact</a></li>
+                <li><a href="https://www.linkedin.com/in/amal-mathews/">Linkedin</a></li>
             </ul>
         </nav>
     </header>
 
     <section id="about">
         <h2>About Me</h2>
-        <p>Write something about yourself here.</p>
+        <p>My career aspirations revolve around continuous growth and innovation in the dynamic realm of artificial intelligence and machine learning. Eager to delve deeper into these cutting-edge technologies, I aspire to expand my knowledge and expertise to make meaningful contributions to the field. Beyond professional development, my ultimate goal is to create something of my own—an innovative solution or product that addresses real-world challenges. By combining my passion for AI and machine learning with an entrepreneurial spirit, I aim to carve out a unique niche in the tech industry, leaving a lasting impact and contributing to the advancement of these transformative technologies.</p>
     </section>
 
     <section id="projects">
@@ -34,12 +58,28 @@
 
     <section id="contact">
         <h2>Contact Me</h2>
-        <p>Write your contact information here.</p>
+        <p>Email: <a href="mailto:amalbmat2001@gmail.com">amalbmat2001@gmail.com</a></p>
     </section>
 
     <footer>
-        <p>&copy; 2022 Your Name</p>
+        <p>&copy; 2024 Amal</p>
     </footer>
+
+    <script>
+        const cursor = document.querySelector('.fancy-cursor');
+
+        document.addEventListener('mousemove', (e) => {
+            cursor.style.left = `${e.clientX - 15}px`;
+            cursor.style.top = `${e.clientY - 15}px`;
+        });
+
+        document.addEventListener('mousedown', () => {
+            cursor.classList.add('hover');
+        });
+
+        document.addEventListener('mouseup', () => {
+            cursor.classList.remove('hover');
+        });
+    </script>
 </body>
 </html>
-
