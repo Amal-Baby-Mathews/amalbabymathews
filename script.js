@@ -9,7 +9,6 @@ if (cursor) {
 document.addEventListener('mousemove', (e) => {
     const x = e.pageX;
     const y = e.pageY;
-    console.log("Cursor moved")
     // Update cursor position
     cursor.style.left = `${x - 15}px`;
     cursor.style.top = `${y - 15}px`;
@@ -37,4 +36,29 @@ document.addEventListener('mousedown', () => {
 document.addEventListener('mouseup', () => {
     cursor.classList.remove('hover');
 });
+
+function checkContentHeight() {
+  const content = document.querySelector('.fade-in');
+  if (!content) {
+    console.error('No element with the class fade-in found');
+    return;
+  }
+  const contentHeight = content.scrollHeight;
+  const windowHeight = window.innerHeight;
+  if (contentHeight > windowHeight+10) {
+    console.log('Content is tall');
+    document.body.classList.add('content-large');
+  } else {
+    document.body.classList.remove('content-large');
+  }
+}
+  
+  // Execute checkContentHeight() on initial load
+  window.addEventListener('DOMContentLoaded', checkContentHeight);
+  
+  // Execute checkContentHeight() when the window is resized
+  window.addEventListener('resize', checkContentHeight);
+  
+  // Execute checkContentHeight() when the page is scrolled
+  window.addEventListener('scroll', checkContentHeight);
 });
