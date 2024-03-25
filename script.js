@@ -7,8 +7,8 @@ if (cursor) {
   // Your existing cursor code here
 
 document.addEventListener('mousemove', (e) => {
-    const x = e.clientX;
-    const y = e.clientY;
+    const x = e.pageX;
+    const y = e.pageY;
     console.log("Cursor moved")
     // Update cursor position
     cursor.style.left = `${x - 15}px`;
@@ -26,6 +26,7 @@ document.addEventListener('mousemove', (e) => {
     prevX = x;
     prevY = y;
   });
+
 } else {
   console.log('Cursor element not found.');
 }
