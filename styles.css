@@ -39,12 +39,12 @@ nav ul li {
 }
 
 nav ul li a {
-    color: #fff;
+    color: #b7f0f3;
     transition: color 0.3s ease;
 }
 
 nav ul li a:hover {
-    color: #ccc;
+    color: #fac1c1;
 }
 
 /* Section styles */
@@ -53,16 +53,60 @@ section {
 }
 
 section h2 {
-    color: #007bff;
+    color: #004b9a;
     margin-bottom: 1rem;
 }
+.header-content {
+    display: flex;
+    align-items: center;
+}
 
+.profile-photo {
+    width: 80px;
+    height: 80px;
+    border-radius: 50%;
+    margin-right: 1rem;
+}
 /* Footer styles */
 footer {
     background-color: #333;
-    color: #fff;
+    color: #c9eafa;
     text-align: center;
     padding: 1rem;
+}
+.fancy-cursor {
+    position: absolute;
+    width: 30px;
+    height: 30px;
+    border-radius: 50%;
+    background-color: rgba(255, 255, 255, 0.3);
+    pointer-events: none;
+    z-index: 999;
+    transition: transform 0.3s ease;
+}
+
+.fancy-cursor.hover {
+    transform: scale(2);
+    background-color: rgba(255, 255, 255, 0.5);
+}
+
+.trail {
+    position: absolute;
+    width: 10px;
+    height: 10px;
+    background-color: rgba(255, 255, 255, 0.3);
+    pointer-events: none;
+    z-index: 998;
+    animation: trail-fade 1s forwards;
+}
+
+@keyframes trail-fade {
+    0% {
+        opacity: 1;
+    }
+    100% {
+        opacity: 0;
+    }
 }
 
 /* Responsive styles */
@@ -81,4 +125,9 @@ footer {
         margin-left: 0;
         margin-bottom: 0.5rem;
     }
+    
 }   
+.fade-in {
+    opacity: 0;
+    animation: fadeIn 1s ease-in-out forwards;
+}

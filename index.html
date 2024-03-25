@@ -1,5 +1,6 @@
 <!DOCTYPE html>
 <link rel="stylesheet" href="styles.css">
+<script src="script.js"></script>
 <html lang="en">
 <head>
     <meta charset="UTF-8">
@@ -9,77 +10,64 @@
         body {
             cursor: none;
         }
-
-        .fancy-cursor {
-            position: absolute;
-            width: 30px;
-            height: 30px;
-            border-radius: 50%;
-            background-color: rgba(255, 255, 255, 0.3);
-            pointer-events: none;
-            z-index: 999;
-            transition: transform 0.3s ease;
-        }
-
-        .fancy-cursor.hover {
-            transform: scale(1.5);
-            background-color: rgba(255, 255, 255, 0.5);
-        }
-
-        /* Additional styles for the website */
-        /* ... */
+        .profile-photo {
+      width: 50px;
+      height: 50px;
+      border-radius: 50%;
+      margin-right: 10px;
+    }
     </style>
 </head>
 <body>
     <div class="fancy-cursor"></div>
 
     <header>
+        <div class="header-content">
+            <img src="images\DSCF6186-01.jpeg" alt="Amal's Photo" class="profile-photo">
+            <h1>Amal's Website</h1>
+        </div>
         <h1>Welcome to Amal's Website</h1>
         <nav>
             <ul>
-                <li><a href="https://www.linkedin.com/in/amal-mathews/">Linkedin</a></li>
-            </ul>
+                <li>
+                  <a href="https://www.linkedin.com/in/amal-mathews/">
+                    <img src="images\icons8-linkedin-50.png" alt="LinkedIn Logo" width="24" height="24">
+                  </a>
+                </li>
+                <li>
+                  <a href="https://github.com/Amal-Baby-Mathews">
+                    <img src="images\github-logo.png" alt="GitHub Logo" width="24" height="24">
+                  </a>
+                </li>
+              </ul>
         </nav>
     </header>
 
-    <section id="about">
+    <section id="about" class="fade-in">
         <h2>About Me</h2>
         <p>My career aspirations revolve around continuous growth and innovation in the dynamic realm of artificial intelligence and machine learning. Eager to delve deeper into these cutting-edge technologies, I aspire to expand my knowledge and expertise to make meaningful contributions to the field. Beyond professional development, my ultimate goal is to create something of my own—an innovative solution or product that addresses real-world challenges. By combining my passion for AI and machine learning with an entrepreneurial spirit, I aim to carve out a unique niche in the tech industry, leaving a lasting impact and contributing to the advancement of these transformative technologies.</p>
     </section>
 
-    <section id="projects">
-        <h2>Projects</h2>
+    <section id="projects" class="fade-in">
+        <h2>Interests and skills</h2>
         <ul>
-            <li>Project 1</li>
-            <li>Project 2</li>
-            <li>Project 3</li>
+            <li><a href="https://www.linkedin.com/in/amal-mathews/"></a>Artificial intelligence engineering</li>
+            <li><a href="https://www.linkedin.com/in/amal-mathews/"></a>3d animation</li>
+            <li><a href="https://www.linkedin.com/in/amal-mathews/"></a>Python programming</li>
+            <li><a href="https://www.linkedin.com/in/amal-mathews/"></a>Software Engineering</li>
         </ul>
     </section>
 
-    <section id="contact">
+    <section id="contact" class="fade-in">
         <h2>Contact Me</h2>
         <p>Email: <a href="mailto:amalbmat2001@gmail.com">amalbmat2001@gmail.com</a></p>
+        <p>Phone: +91 9188458610</p>
     </section>
 
     <footer>
         <p>&copy; 2024 Amal</p>
     </footer>
 
-    <script>
-        const cursor = document.querySelector('.fancy-cursor');
 
-        document.addEventListener('mousemove', (e) => {
-            cursor.style.left = `${e.clientX - 15}px`;
-            cursor.style.top = `${e.clientY - 15}px`;
-        });
-
-        document.addEventListener('mousedown', () => {
-            cursor.classList.add('hover');
-        });
-
-        document.addEventListener('mouseup', () => {
-            cursor.classList.remove('hover');
-        });
-    </script>
 </body>
 </html>
