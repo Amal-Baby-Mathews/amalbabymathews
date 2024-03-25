@@ -14,7 +14,7 @@ document.addEventListener('mousemove', (e) => {
     cursor.style.left = `${x - 15}px`;
     cursor.style.top = `${y - 15}px`;
   
-    // Create trail squares (logic remains the same)
+    // Create trail squares 
     if (Math.abs(x - prevX) > 10 || Math.abs(y - prevY) > 10) {
       const trail = document.createElement('div');
       trail.classList.add('trail');

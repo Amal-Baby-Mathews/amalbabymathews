@@ -80,7 +80,7 @@ footer {
     width: 30px;
     height: 30px;
     border-radius: 50%;
-    background-color: rgba(222, 222, 222, 0.3);
+    background-color: #366348;
     pointer-events: none;
     z-index: 999;
     transition: transform 0.3s ease;
@@ -88,7 +88,7 @@ footer {
 
 .fancy-cursor.hover {
     transform: scale(2);
-    background-color: rgba(222, 222, 222, 0.5);
+    background-color: #5e836d;
 }
 
 .trail {
@@ -129,6 +129,5 @@ footer {
     
 }   
 .fade-in {
-    opacity: 1;
     animation: fadeIn 1s ease-in-out forwards;
 }
