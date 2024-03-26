@@ -144,6 +144,7 @@ footer {
 }   
   /* Rounded edges */
  .fade-in {
+  transition: all 0.5s ease-in-out;
    border-radius: 20px; /* Maintain the existing border radius */
   margin: 20px; /* Add margin for spacing */
   padding: 20px; /* Add padding for content spacing inside the box */
@@ -166,16 +167,19 @@ footer {
 @media only screen and (max-width: 700px) {
     /* Styles for mobile */
     .content-large {
-        transition: color 30s, background-color 3s; /* Transition both color and background-color */
+  /* Transition both color and background-color */
       }
   
     .content-large h2 {
+
       color: #ff0000; /* Change color when hovered on mobile */
     }
-    .content-large .fade-in{
+    .content-large{
+
         background-color: #000;
         color: #49c5b6;
       }
+    
     .fancy-cursor {
         display: none;
     }

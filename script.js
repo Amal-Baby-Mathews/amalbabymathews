@@ -37,28 +37,22 @@ document.addEventListener('mouseup', () => {
     cursor.classList.remove('hover');
 });
 
-function checkContentHeight() {
-  const content = document.querySelector('.fade-in');
-  if (!content) {
-    console.error('No element with the class fade-in found');
-    return;
+function handleScroll() {
+  const fadeInElements = document.querySelectorAll('.fade-in');
+  
+    fadeInElements.forEach((element) => {
+      const elementTop = element.getBoundingClientRect().top;
+      const elementBottom = element.getBoundingClientRect().bottom;
+      
+      if (elementTop < window.innerHeight && elementBottom >= 0) {
+        console.log("hello");
+        element.classList.add('content-large');
+      } else {
+        element.classList.remove('content-large');
+      }
+    });
   }
-  const contentHeight = content.scrollHeight;
-  const windowHeight = window.innerHeight;
-  if (contentHeight > windowHeight+10) {
-    console.log('Content is tall');
-    document.body.classList.add('content-large');
-  } else {
-    document.body.classList.remove('content-large');
-  }
-}
-  
-  // Execute checkContentHeight() on initial load
-  window.addEventListener('DOMContentLoaded', checkContentHeight);
-  
-  // Execute checkContentHeight() when the window is resized
-  window.addEventListener('resize', checkContentHeight);
-  
-  // Execute checkContentHeight() when the page is scrolled
-  window.addEventListener('scroll', checkContentHeight);
+
+document.addEventListener('scroll', handleScroll);
+
 });
