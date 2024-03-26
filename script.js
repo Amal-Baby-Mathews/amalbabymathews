@@ -51,13 +51,13 @@ function debounce(func, wait) {
   };
 }
 
-let prevScrollPos = window.pageYOffset;
+let prevScrollPos = window.scrollY;
 
 function handleScroll() {
-  const currentScrollPos = window.pageYOffset;
+  const currentScrollPos = window.scrollY;
   const fadeInElements = document.querySelectorAll('.fade-in');
 
-  if (currentScrollPos > prevScrollPos) {
+  if (currentScrollPos > 0 ) {
     // Scrolling down
     fadeInElements.forEach((element) => {
       const elementTop = element.getBoundingClientRect().top;
