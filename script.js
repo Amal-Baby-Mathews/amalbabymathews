@@ -37,22 +37,51 @@ document.addEventListener('mouseup', () => {
     cursor.classList.remove('hover');
 });
 
+function debounce(func, wait) {
+  let timeout;
+  return function executedFunction() {
+    const context = this;
+    const args = arguments;
+    const later = function() {
+      timeout = null;
+      func.apply(context, args);
+    };
+    clearTimeout(timeout);
+    timeout = setTimeout(later, wait);
+  };
+}
+
+let prevScrollPos = window.pageYOffset;
+
 function handleScroll() {
+  const currentScrollPos = window.pageYOffset;
   const fadeInElements = document.querySelectorAll('.fade-in');
-  
+
+  if (currentScrollPos > prevScrollPos) {
+    // Scrolling down
     fadeInElements.forEach((element) => {
       const elementTop = element.getBoundingClientRect().top;
       const elementBottom = element.getBoundingClientRect().bottom;
-      
-      if (elementTop < window.innerHeight && elementBottom >= 0) {
-        console.log("hello");
+      const isVisible = (elementTop < window.innerHeight && elementBottom >= 0);
+
+      if (isVisible) {
         element.classList.add('content-large');
       } else {
         element.classList.remove('content-large');
       }
     });
+  } else {
+    // Scrolling up
+    fadeInElements.forEach((element) => {
+      element.classList.remove('content-large');
+    });
   }
 
-document.addEventListener('scroll', handleScroll);
+  prevScrollPos = currentScrollPos;
+}
+
+const debouncedScroll = debounce(handleScroll, 100);
+
+document.addEventListener('scroll', debouncedScroll);
 
 });
