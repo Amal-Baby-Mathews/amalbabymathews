@@ -299,7 +299,7 @@ footer {
     height: 100px;
     position: relative;
     transform-style: preserve-3d;
-    animation: rotate 5s infinite linear;
+    animation: rotate 2s infinite linear;
   }
   
   .side {

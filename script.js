@@ -53,7 +53,7 @@ function handleScroll() {
     fadeInElements.forEach((element) => {
       const elementTop = element.getBoundingClientRect().top;
       const elementBottom = element.getBoundingClientRect().bottom;
-      const isVisible = (elementTop - 100 < window.innerHeight && elementBottom >= 0);
+      const isVisible = (elementTop + 250 < window.innerHeight && elementBottom+250>= 0);
       if (isVisible) {
         element.classList.add('content-large');
       } else {
