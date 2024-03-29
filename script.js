@@ -56,13 +56,19 @@ let prevScrollPos = window.scrollY;
 function handleScroll() {
   const currentScrollPos = window.scrollY;
   const fadeInElements = document.querySelectorAll('.fade-in');
+  const header = document.querySelector('header');
+  const nav = document.querySelector('nav ul');
+  if (currentScrollPos > 150 ) {
+    nav.classList.add('change');
+    header.classList.add('change-header');
+  // Scrolling down
 
-  if (currentScrollPos > 0 ) {
+  
     // Scrolling down
     fadeInElements.forEach((element) => {
       const elementTop = element.getBoundingClientRect().top;
       const elementBottom = element.getBoundingClientRect().bottom;
-      const isVisible = (elementTop < window.innerHeight && elementBottom >= 0);
+      const isVisible = (elementTop-100 < window.innerHeight && elementBottom >= 0);
 
       if (isVisible) {
         element.classList.add('content-large');
@@ -71,6 +77,9 @@ function handleScroll() {
       }
     });
   } else {
+    header.classList.remove('change-header');
+    nav.classList.remove('change');
+  
     // Scrolling up
     fadeInElements.forEach((element) => {
       element.classList.remove('content-large');
