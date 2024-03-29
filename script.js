@@ -37,20 +37,6 @@ document.addEventListener('mouseup', () => {
     cursor.classList.remove('hover');
 });
 
-function debounce(func, wait) {
-  let timeout;
-  return function executedFunction() {
-    const context = this;
-    const args = arguments;
-    const later = function() {
-      timeout = null;
-      func.apply(context, args);
-    };
-    clearTimeout(timeout);
-    timeout = setTimeout(later, wait);
-  };
-}
-
 let prevScrollPos = window.scrollY;
 
 function handleScroll() {
@@ -58,18 +44,16 @@ function handleScroll() {
   const fadeInElements = document.querySelectorAll('.fade-in');
   const header = document.querySelector('header');
   const nav = document.querySelector('nav ul');
-  if (currentScrollPos > 150 ) {
+
+  if (currentScrollPos > 40) {
     nav.classList.add('change');
     header.classList.add('change-header');
-  // Scrolling down
 
-  
     // Scrolling down
     fadeInElements.forEach((element) => {
       const elementTop = element.getBoundingClientRect().top;
       const elementBottom = element.getBoundingClientRect().bottom;
-      const isVisible = (elementTop-100 < window.innerHeight && elementBottom >= 0);
-
+      const isVisible = (elementTop - 100 < window.innerHeight && elementBottom >= 0);
       if (isVisible) {
         element.classList.add('content-large');
       } else {
@@ -79,7 +63,7 @@ function handleScroll() {
   } else {
     header.classList.remove('change-header');
     nav.classList.remove('change');
-  
+
     // Scrolling up
     fadeInElements.forEach((element) => {
       element.classList.remove('content-large');
@@ -89,8 +73,5 @@ function handleScroll() {
   prevScrollPos = currentScrollPos;
 }
 
-const debouncedScroll = debounce(handleScroll, 100);
-
-document.addEventListener('scroll', debouncedScroll);
-
+document.addEventListener('scroll', handleScroll);
 });

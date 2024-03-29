@@ -81,7 +81,7 @@ header {
     position: fixed;
     top:0;
     width: 100%;
-    transition: all 0.5s ease-in-out; /* Add transition */
+    transition: all 0.2s ease-in-out; /* Add transition */
     background-color: #000;
     color: #50d8c8;
     padding: 1rem;
@@ -94,7 +94,7 @@ header {
 .spacer
 {
     width: 100%;
-    height: 100vh;
+    height: 80vh;
 }
 .change-header {
     height:30vh;
@@ -281,14 +281,80 @@ footer {
 }   
   /* Rounded edges */
  .fade-in {
-  transition: all 0.5s ease-in-out;
+  transition: all 1s ease-in-out;
    border-radius: 20px; /* Maintain the existing border radius */
   margin: 20px; /* Add margin for spacing */
   padding: 20px; /* Add padding for content spacing inside the box */
   box-shadow: 0px 5px 10px rgba(0, 0, 0, 0.2); /* Add a shadow effect */
   background-color: #fff; /* Set a background color (optional) */
   }
-
+  .cube-wrapper {
+    display: flex;
+    justify-content: center;
+    height: 300px;
+  }
+  .cube {
+    top:55%;
+    width: 100px;
+    height: 100px;
+    position: relative;
+    transform-style: preserve-3d;
+    animation: rotate 5s infinite linear;
+  }
+  
+  .side {
+    position: absolute;
+    width: 0px;
+    height: 0px;
+    opacity: 1;
+    font-family: Consolas, monaco, monospace;
+    font-size: 100px;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+  }
+  
+  .front {
+    background-color: #ff6347;
+    transform: translateZ(100px);
+  }
+  
+  .back {
+    background-color: #ffa500;
+    transform: rotateY(180deg) translateZ(100px);
+  }
+  
+  .right {
+    background-color: #ffd700;
+    transform: rotateY(90deg) translateZ(100px);
+  }
+  
+  .left {
+    background-color: #008000;
+    transform: rotateY(-90deg) translateZ(100px);
+  }
+  
+  .top {
+    background-color: #0000ff;
+    transform: rotateX(90deg) translateZ(100px);
+  }
+  
+  .bottom {
+    background-color: #800080;
+    transform: rotateX(-90deg) translateZ(100px);
+  }
+  
+  @keyframes rotate {
+    0% {
+      transform: rotateX(0deg) rotateY(0deg);
+    }
+    100% {
+      transform: rotateX(360deg) rotateY(360deg);
+    }
+  }
+  .fade-in ul{
+    list-style: square;
+  }
   /* Hover effect */
   .fade-in:hover {
     background-color: #000;
@@ -313,7 +379,9 @@ footer {
         background-color: #000;
         color: #49c5b6;
       }
-    
+    .content-large.fade-in a {
+        color: #ff0000;
+    }
     .fancy-cursor {
         display: none;
     }
