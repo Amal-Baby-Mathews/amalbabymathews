@@ -118,13 +118,135 @@
             <li><a href="https://www.linkedin.com/in/amal-mathews/"></a>Software Engineering</li>
         </ul>
     </section>
+    <section id="Project-sect" class="fade-in">
+        <h2>Projects</h2>
+        <h2>A Django Web App with AI-Powered Chatbot, Image Generation, and Personalized Indexing</h2>
+            <p>Introducing Awe app, a next-generation web application powered by Django that empowers you to:</p>
 
+            <section class="features">
+              <h2>Seamless User Experience</h2>
+              <ul>
+                <li>Personalized Workspace: Each user enjoys a dedicated index for storing their creative endeavors.</li>
+                <li>Intuitive Chat Interface: Engage with our intelligent chatbot in a natural, conversational way.</li>
+                <li>Multiple Upload Options: Upload PDFs, CSV files, or plain text to enrich your index.</li>
+              </ul>
+            </section>
+          
+            <section class="technology">
+              <h2>Cutting-edge AI Technologies</h2>
+              <ul>
+                <li><b>Custom User Index Storage: Efficiently store and manage your project-related data.</li>
+                <li><b>Faiss Database Integration: Leverage Faiss, a high-performance library, to search and retrieve relevant information for your prompts.</li>
+                <li><b>Semantic Prompt Generation: Craft image prompts that resonate with the underlying meaning of your text input.</li>
+                <li><b>Conversational Context: The chatbot considers your chat history to provide tailored responses and image generation.</li>
+              </ul>
+            </section>
+          
+            <section class="benefits">
+              <h2>Unlock Endless Possibilities</h2>
+              <p>
+                Awe app fosters an environment where you can:
+              </p>
+              <ul>
+                <li>Generate captivating visuals based on your ideas and concepts.</li>
+                <li>Streamline your creative workflow with intelligent suggestions and prompts.</li>
+                <li>Discover new connections and explore innovative design possibilities.</li>
+              </ul>
+            </section>
+            <section class="skills">
+                <h2>Skills Gained</h2>
+                <p>Building this project allowed me to deepen my understanding and practical experience in:</p>
+                <ul>
+                  <li><b>Artificial Intelligence (AI):</b> Applied AI principles to create an intelligent system.</li>
+                  <li><b>Machine Learning (ML):</b> Utilized ML techniques (potentially for the image generation model) to train and improve the system.</li>
+                  <li><b>Large Language Model (LLM):</b> Integrated an LLM (if applicable) for understanding user input and generating text.</li>
+                  <li><b>Faiss Database:**</b> Effectively implemented Faiss for fast and efficient information retrieval.</li>
+                </ul>
+            </section>
+        <img src="images\django1.gif" alt="gif generator" style="width: 70vw; height: auto;">
+        <img src="images\django2.gif" alt="gif generator" style="width: 70vw; height: auto;">
+        <p>You can download the code from this <a href="https://github.com/Amal-Baby-Mathews/djnappnew">Repository.</a></p>
+    </section>
+    <section id="NEAT" class="fade-in">
+        <h2>Experimenting with NEAT for Stock Trend Prediction</h2>
+
+<p>As an intermediate AI Engineer, I'm always fascinated by exploring new approaches to existing problems. This project delved into the world of Neuroevolution of Augmenting Topologies (NEAT), a technique for evolving neural network architectures. My goal? To investigate its potential for predicting stock trends.</p>
+
+<h2>Technical Details</h2>
+
+
+<ul>
+  <li>NEAT Library: The project utilized the NEAT library (link to documentation: <a href="https://lnkd.in/g3YP4CAA">https://lnkd.in/g3YP4CAA</a>).</li>
+  <li>Dataset: Historical data for TSLA stock, including Open, Close, High, and Low prices.</li>
+  <li>Goal: Predict future trends (upward/downward) instead of absolute stock prices.</li>
+  <li>Network Input: The model achieved better results when fed with the previous day's OHLC (Open, High, Low, Close) data compared to using only the past 5 days' closing prices.</li>
+  <li>Visualization: <img src="images\neat1.jpeg" alt="gif generator" style="width: 70vw; height: auto;">
+    <img src="images\neat2.jpeg" alt="gif generator" style="width: 70vw; height: auto;"></li>
+</ul>
+</ul>
+
+<h2>Why NEAT?</h2>
+
+<p>While established models like SARIMA exist for stock prediction, NEAT offers a unique advantage. Its ability to evolve neural network architectures through generations allows the network to automatically discover optimal configurations for the specific task. This holds the potential to surpass hand-crafted architectures.</p>
+
+<h2>Disclaimer</h2>
+
+<p>Predicting the stock market remains a complex and challenging task. This project served as an exploratory experiment, and the results do not guarantee future success. It's crucial to conduct thorough research and due diligence before making investment decisions.</p>
+
+<h2>Skills Gained</h2>
+
+<ul>
+  <li>Understanding and applying NEAT principles for neural network evolution.</li>
+  <li>Data preprocessing and feature engineering for financial data.</li>
+  <li>Training and evaluating neural networks for time series prediction.</li>
+  <li>Experiment design and analysis for evaluating model performance.</li>
+  <li>Utilizing Web development skills creating a complete webpage.</li>
+</ul>
+
+<h2>What's Next?</h2>
+
+<p>I'm eager to explore NEAT's capabilities further, applying it to other challenging problems. Additionally, combining NEAT with established techniques could potentially lead to even better results. Feel free to discuss your thoughts on NEAT and its potential in the comments below!</p>
+
+    </section>
+    <section id="Neatping" class="fade-in">
+        <h2>Diving into NeuroEvolution of Augmented Topologies (NEAT)</h2>
+        <p>Hey everyone! Today I'm taking a deep dive into a fascinating paper by Kenneth O. Stanley and Risto Miikkulainen: Evolving Neural Networks through Augmenting Topologies (NEAT). This groundbreaking work explores how to evolve neural networks not just for better weights, but for better structures too!</p>
+        <p>Imagine this: You're training a robot arm to grab a cup. Using traditional methods, you tweak its "muscle" settings (weights) endlessly. With NEAT, you also evolve the arm's anatomy itself, maybe growing extra fingers or adjusting their length! This leads to much faster and more creative solutions.</p>
+        
+        <h2>How NEAT Works</h2>
+        <h3>Historical Markings</h3>
+        <p>Think of these as birthmarks for each part of the network. They keep track of how each node and connection came to be, preventing "reinventing the wheel" and ensuring valuable structures survive.</p>
+        <h3>Speciation</h3>
+        <p>Like in nature, NEAT encourages diversity by grouping similar networks into "species." This prevents one dominant design from wiping out all others, allowing exploration of different approaches.</p>
+        <h3>Incremental Growth</h3>
+        <p>Just like a baby, NEAT networks start simple and gradually add complexity, ensuring efficient evolution and avoiding getting overwhelmed.</p>
+        
+        <h2>The Big Deal</h2>
+        <p>NEAT opens up a whole new world of possibilities for AI:</p>
+        <ul>
+            <li>Robotics: Design robots that adapt to their environment, walk on any terrain, or even learn new skills like climbing.</li>
+            <li>Game AI: Train agents that strategize, learn from mistakes, and even create their own tactics in games like Pong.</li>
+            <li>Creative AI: Generate art, music, and even write stories by evolving neural networks that explore new avenues of expression.</li>
+        </ul>
+        
+        <h2>Advancements and Extensions</h2>
+        <p>But NEAT isn't alone! Researchers are constantly building on its foundations:</p>
+        <ul>
+            <li>HyperNEAT: Optimizes not just network topology, but also the evolution process itself!</li>
+            <li>Compositional Pattern Producing NEAT (CPPN): Creates modular neural networks, easier to understand and adapt for specific tasks.</li>
+        </ul>
+        <img src="images\neatping1.gif" alt="gif generator" style="width: 70vw; height: auto;">
+        <h2>Project Implementation</h2>
+        <p>Here is the GitHub repository for my implementation of the NEAT-python library to make a Pong game play itself. The game iterates through generations and multiple paddles. Each generation filters out and selects the best performing paddle. The genealogy of this paddle is transferred onto the next generations for improving the neural network. Please feel free to try it out for yourself, make sure to tweak the config file to improve model performance.</p>
+        <p>GitHub Link: <a href="https://github.com/Amal-Baby-Mathews/PONG-GAME-ML-amal.git">Pong Game ML Repository</a></p>
+    
+    </section>
     <section id="contact" class="fade-in">
         <h2>Contact Me</h2>
         <p>Email: <a href="mailto:amalbmat2001@gmail.com">amalbmat2001@gmail.com</a></p>
         <p>Phone: +91 9188458610</p>
     </section>
-
+    
     <footer>
         <p>&copy; 2024 Amal</p>
     </footer>
