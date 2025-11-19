@@ -1,77 +1,58 @@
-document.addEventListener('DOMContentLoaded', function() {
-  const cursor = document.querySelector('.fancy-cursor');
-const body = document.querySelector('body');
-let prevX = 0;
-let prevY = 0;
-if (cursor) {
-  // Your existing cursor code here
-
-document.addEventListener('mousemove', (e) => {
-    const x = e.pageX;
-    const y = e.pageY;
-    // Update cursor position
-    cursor.style.left = `${x - 15}px`;
-    cursor.style.top = `${y - 15}px`;
-  
-    // Create trail squares 
-    if (Math.abs(x - prevX) > 10 || Math.abs(y - prevY) > 10) {
-      const trail = document.createElement('div');
-      trail.classList.add('trail');
-      trail.style.left = `${x - 5}px`;
-      trail.style.top = `${y - 5}px`;
-      body.appendChild(trail);
-    }
-  
-    prevX = x;
-    prevY = y;
-  });
-
-} else {
-  console.log('Cursor element not found.');
-}
-document.addEventListener('mousedown', () => {
-    cursor.classList.add('hover');
-});
-
-document.addEventListener('mouseup', () => {
-    cursor.classList.remove('hover');
-});
-
-let prevScrollPos = window.scrollY;
-
-function handleScroll() {
-  const currentScrollPos = window.scrollY;
-  const fadeInElements = document.querySelectorAll('.fade-in');
-  const header = document.querySelector('header');
-  const nav = document.querySelector('nav ul');
-
-  if (currentScrollPos > 40) {
-    nav.classList.add('change');
-    header.classList.add('change-header');
-
-    // Scrolling down
-    fadeInElements.forEach((element) => {
-      const elementTop = element.getBoundingClientRect().top;
-      const elementBottom = element.getBoundingClientRect().bottom;
-      const isVisible = (elementTop + 250 < window.innerHeight && elementBottom+250>= 0);
-      if (isVisible) {
-        element.classList.add('content-large');
-      } else {
-        element.classList.remove('content-large');
-      }
-    });
-  } else {
-    header.classList.remove('change-header');
-    nav.classList.remove('change');
-
-    // Scrolling up
-    fadeInElements.forEach((element) => {
-      element.classList.remove('content-large');
-    });
+// 1. PARALLAX EFFECT FOR HERO IMAGE
+// Moves the profile picture slightly slower than scroll to create depth
+window.addEventListener('scroll', () => {
+  const scrolled = window.scrollY;
+  const squircle = document.querySelector('.squircle-frame');
+  // Only animate if we are near the top to save performance
+  if (scrolled < 800 && squircle) {
+      squircle.style.transform = `translateY(${scrolled * 0.15}px) rotate(-3deg)`;
   }
+});
 
-  prevScrollPos = currentScrollPos;
-}
+// 2. STAGGERED SCROLL ANIMATION
+// Defines the observer
+const observerOptions = {
+  root: null,
+  rootMargin: '0px',
+  threshold: 0.1
+};
 
-document.addEventListener('scroll', handleScroll);
+const observer = new IntersectionObserver((entries) => {
+  entries.forEach((entry) => {
+      if (entry.isIntersecting) {
+          entry.target.classList.add('show-up');
+          observer.unobserve(entry.target); // Only animate once
+      }
+  });
+}, observerOptions);
+
+// 3. APPLY ANIMATIONS DYNAMICALLY
+// This finds specific elements and applies the hidden class + staggered delays
+const elementsToAnimate = [
+  { selector: '#hero h1', delay: '0s' },
+  { selector: '#hero .role', delay: '0.1s' },
+  { selector: '#hero .status-badge', delay: '0.2s' },
+  { selector: '#hero .hero-cta', delay: '0.3s' },
+  { selector: '.squircle-frame', delay: '0.2s' }, // Hero Image
+  { selector: '.section-title', delay: '0s' },
+  { selector: '.about-grid > div', delay: '0.1s' },
+  { selector: '.skill-card', delay: 'stagger' }, // Special 'stagger' logic
+  { selector: '.project-card', delay: '0s' },
+  { selector: '.footer-main h2', delay: '0s' }
+];
+
+elementsToAnimate.forEach(item => {
+  const elements = document.querySelectorAll(item.selector);
+  elements.forEach((el, index) => {
+      el.classList.add('hidden-up');
+      
+      // Calculate delay
+      let delay = item.delay;
+      if (item.delay === 'stagger') {
+          delay = `${index * 0.1}s`; // 0s, 0.1s, 0.2s...
+      }
+      
+      el.style.transitionDelay = delay;
+      observer.observe(el);
+  });
 });
