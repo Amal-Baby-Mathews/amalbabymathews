@@ -3,155 +3,450 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Amal Baby Mathews | AI Engineer</title>
-    <link rel="icon" href="images/a.png" type="image/png">
-
+    <title>Amal Baby Mathews | SOTA Portfolio</title>
+    <!-- Fonts -->
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500&family=Space+Grotesk:wght@400;600;700&display=swap" rel="stylesheet">
-
+    <link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@300;400;500;700&family=Syncopate:wght@400;700&display=swap" rel="stylesheet">
+    
+    <!-- Icons -->
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
-    <link rel="stylesheet" href="styles.css">
+    
+    <style>
+        /* =========================================
+           RESET & VARS
+           ========================================= */
+        :root {
+            --bg: #0a0a0a;
+            --text: #f0f0f0;
+            --accent: #ff2a2a; 
+            --glass: rgba(20, 20, 20, 0.6); 
+            --border: rgba(255, 255, 255, 0.1);
+            
+            --font-head: 'Syncopate', sans-serif;
+            --font-body: 'Space Grotesk', sans-serif;
+        }
+
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        html { scroll-behavior: smooth; background: var(--bg); }
+        body { font-family: var(--font-body); color: var(--text); overflow-x: hidden; position: relative; }
+
+        /* =========================================
+           VISUAL ENGINE
+           ========================================= */
+        .visual-engine {
+            position: absolute;
+            top: 0; left: 0;
+            width: 100%; 
+            height: 100%;
+            z-index: 1; 
+            pointer-events: none;
+            overflow: visible;
+        }
+        #main-svg { 
+            width: 100%; 
+            height: 100%; 
+            overflow: visible; 
+        }
+
+        #fuse-burnt {
+            stroke: #222; 
+            stroke-width: 2px;
+            fill: none;
+            opacity: 0.8;
+        }
+
+        #fuse-unburnt {
+            stroke: #555; 
+            stroke-width: 3px;
+            fill: none;
+            stroke-linecap: butt;
+        }
+
+        /* =========================================
+           LAYOUT
+           ========================================= */
+        main { position: relative; z-index: 2; }
+        .container { width: 90%; max-width: 1200px; margin: 0 auto; }
+
+        #hero { height: 100vh; display: flex; align-items: center; justify-content: center; position: relative; }
+        .hero-layout { display: flex; align-items: center; justify-content: space-between; gap: 4rem; width: 100%; }
+        
+        .hero-image-wrapper { 
+            width: 300px; height: 400px; 
+            position: relative; 
+            border: 1px solid var(--border); 
+            overflow: hidden; 
+            background: var(--bg); 
+            z-index: 5;
+            transition: border-color 0.3s, box-shadow 0.3s, transform 0.3s;
+        }
+        .profile-img { width: 100%; height: 100%; object-fit: cover; filter: grayscale(100%); transition: 0.5s; }
+        .hero-image-wrapper:hover .profile-img { filter: grayscale(0%); }
+        
+        /* IGNITED STATE FOR HERO IMAGE */
+        .hero-image-wrapper.ignited {
+            border-color: var(--accent);
+            box-shadow: 0 0 35px rgba(255, 42, 42, 0.4);
+            transform: scale(1.02);
+        }
+
+        .hero-content h1 { font-family: var(--font-head); font-size: 4rem; line-height: 1; font-weight: 700; margin: 1rem 0; text-transform: uppercase; }
+        .subtitle { font-size: 1.2rem; color: #888; letter-spacing: 2px; }
+        .status-badge { display: inline-flex; align-items: center; gap: 10px; font-size: 0.8rem; color: var(--accent); margin-bottom: 1rem; border: 1px solid rgba(255, 42, 42, 0.3); padding: 5px 10px; }
+        .blinking-dot { width: 6px; height: 6px; background: var(--accent); border-radius: 50%; animation: blink 2s infinite; }
+
+        .timeline-container { position: relative; padding: 100px 0; max-width: 1400px; margin: 0 auto; }
+        .timeline-block { display: flex; margin-bottom: 150px; position: relative; width: 100%; }
+        .timeline-block.left { justify-content: flex-start; padding-left: 10%; padding-right: 55%; }
+        .timeline-block.right { justify-content: flex-end; padding-right: 10%; padding-left: 55%; }
+
+        /* =========================================
+           CARDS & INTERACTION
+           ========================================= */
+        .card { 
+            background: rgba(10, 10, 10, 0.85); 
+            backdrop-filter: blur(12px); 
+            border: 1px solid var(--border); 
+            padding: 2.5rem; 
+            width: 100%; 
+            transition: transform 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275), border-color 0.3s, box-shadow 0.3s, background 0.3s; 
+            position: relative;
+            z-index: 10; 
+            overflow: hidden; 
+            cursor: pointer; /* Indicates clickability */
+        }
+        
+        /* Hover State (User Interaction) */
+        .card:hover {
+            transform: translateY(-8px);
+            border-color: rgba(255, 255, 255, 0.4);
+        }
+
+        /* Spark "Ignited" State (Visual Feedback from Scroll) */
+        .card.ignited {
+            border-color: var(--accent);
+            box-shadow: 0 0 40px rgba(255, 42, 42, 0.3), inset 0 0 20px rgba(255, 42, 42, 0.1);
+            background: rgba(20, 10, 10, 0.9);
+        }
+        /* When ignited AND hovered */
+        .card.ignited:hover {
+             box-shadow: 0 0 50px rgba(255, 42, 42, 0.5), inset 0 0 30px rgba(255, 42, 42, 0.2);
+        }
+
+        .card.ignited h2, .card.ignited h3 {
+            text-shadow: 0 0 15px rgba(255, 42, 42, 0.8);
+            color: #fff;
+        }
+        .card.ignited .meta {
+            text-shadow: 0 0 8px var(--accent);
+            color: #fff;
+        }
+        
+        .meta { font-family: var(--font-head); color: var(--accent); font-size: 0.8rem; display: block; margin-bottom: 1rem; transition: text-shadow 0.3s, color 0.3s; }
+        h2 { font-family: var(--font-head); font-size: 2rem; margin-bottom: 1.5rem; transition: color 0.3s, text-shadow 0.3s; }
+        p { line-height: 1.6; color: #ccc; font-size: 1.1rem; }
+        
+        /* =========================================
+           EXPANDABLE CONTENT
+           ========================================= */
+        .click-hint {
+            font-size: 0.75rem;
+            color: #555;
+            margin-top: 1rem;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+            opacity: 0.6;
+            transition: opacity 0.3s;
+        }
+        .card:hover .click-hint { opacity: 1; color: var(--accent); }
+
+        .description-placeholder {
+            max-height: 0;
+            opacity: 0;
+            overflow: hidden;
+            transition: max-height 0.5s ease-out, opacity 0.4s ease-out, margin-top 0.4s ease, padding-top 0.4s ease;
+            border-top: 1px solid transparent;
+            margin-top: 0;
+            padding-top: 0;
+            color: #999;
+            font-size: 1rem;
+        }
+
+        /* Expanded State (Triggered by Click) */
+        .card.expanded .description-placeholder {
+            max-height: 1200px; /* Allow enough space */
+            opacity: 1;
+            margin-top: 1.5rem;
+            padding-top: 1.5rem;
+            border-top: 1px solid rgba(255, 42, 42, 0.3);
+        }
+        .card.expanded {
+            background: rgba(15, 15, 15, 0.95);
+        }
+
+        /* Project detail styling */
+        .tech-details {
+            margin-top: 1rem;
+            font-size: 0.95rem;
+        }
+        .tech-details strong { color: #fff; }
+        .tech-details ul { margin-left: 1.2rem; margin-bottom: 1rem; margin-top: 0.5rem; }
+        .tech-details li { margin-bottom: 0.5rem; color: #aaa; }
+
+        .terminal-box { background: #000; border-left: 2px solid var(--accent); padding: 1rem; margin-top: 1.5rem; font-family: monospace; font-size: 0.9rem; color: #aaa; }
+
+        .skill-grid { display: grid; gap: 2rem; }
+        .skill-set h3 { font-size: 1rem; color: #fff; border-bottom: 1px solid #333; padding-bottom: 0.5rem; margin-bottom: 0.5rem; transition: text-shadow 0.3s; }
+        .skill-set.highlight h3 { color: var(--accent); border-color: var(--accent); }
+        .skill-set ul { list-style: none; }
+        .skill-set li { color: #888; margin-bottom: 0.3rem; font-size: 0.95rem; }
+
+        .projects-wrapper { margin-top: 100px; }
+        .section-title-center { text-align: center; margin-bottom: 80px; }
+        .project-card { padding: 0; overflow: hidden; }
+        .project-media img { width: 100%; display: block; filter: grayscale(80%); transition: 0.5s; }
+        .project-card:hover .project-media img { filter: grayscale(0%); }
+        .project-info { padding: 2rem; }
+        .project-info h3 { transition: text-shadow 0.3s; }
+        .tags span { display: inline-block; font-size: 0.75rem; background: #222; padding: 4px 8px; margin-right: 5px; margin-bottom: 10px; color: #aaa; }
+        .btn-link { display: inline-block; margin-top: 15px; color: var(--text); text-decoration: none; border-bottom: 1px solid var(--accent); padding-bottom: 2px; font-size: 0.9rem; }
+
+        #contact { 
+            position: relative; 
+            padding: 150px 0 50px; 
+            text-align: center; 
+            overflow: hidden; 
+            z-index: 20; 
+            background-color: var(--bg); 
+            border-top: 1px solid #222;
+        }
+
+        .footer-glow-bg { position: absolute; top: 50%; left: 50%; transform: translate(-50%, -50%); width: 0%; height: 0%; background: radial-gradient(circle, rgba(255,42,42,0.8) 0%, rgba(0,0,0,0) 70%); z-index: -1; transition: width 0.3s, height 0.3s, opacity 0.3s; opacity: 0; pointer-events: none; }
+        #contact.detonation-active .footer-glow-bg { width: 150vw; height: 150vw; opacity: 1; }
+        #contact.detonation-active .giant-text { color: #fff; text-shadow: 0 0 30px rgba(255, 255, 255, 0.8); }
+        .giant-text { font-family: var(--font-head); font-size: 3.5rem; margin-bottom: 4rem; transition: 0.3s; }
+        .contact-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 2rem; border-top: 1px solid #222; padding-top: 3rem; margin-bottom: 3rem; }
+        .contact-col { display: flex; flex-direction: column; align-items: center; }
+        .lbl { font-size: 0.8rem; color: #555; margin-bottom: 0.5rem; letter-spacing: 1px; }
+        .contact-col a { color: #fff; text-decoration: none; font-size: 1.1rem; }
+        .contact-col a:hover { color: var(--accent); }
+        .copyright { color: #444; font-size: 0.8rem; }
+
+        @keyframes blink { 0%, 100% { opacity: 1; } 50% { opacity: 0.3; } }
+        @media (max-width: 768px) {
+            .hero-layout { flex-direction: column; text-align: center; }
+            .hero-content h1 { font-size: 2.5rem; }
+            .timeline-block.left, .timeline-block.right { padding: 0 20px; justify-content: center; }
+            .contact-grid { grid-template-columns: 1fr; gap: 2rem; }
+            .giant-text { font-size: 2rem; }
+        }
+    </style>
 </head>
-<body>
+<body class="loading">
 
-    <div class="bg-grid"></div>
+    <div class="visual-engine">
+        <svg id="main-svg">
+            <defs>
+                <filter id="glow" x="-50%" y="-50%" width="200%" height="200%">
+                    <feGaussianBlur stdDeviation="3.5" result="coloredBlur"/>
+                    <feMerge>
+                        <feMergeNode in="coloredBlur"/>
+                        <feMergeNode in="SourceGraphic"/>
+                    </feMerge>
+                </filter>
+            </defs>
+            
+            <path id="fuse-burnt" vector-effect="non-scaling-stroke" />
+            <path id="fuse-unburnt" vector-effect="non-scaling-stroke" pathLength="1" />
+            
+            <g id="spark-assembly">
+                <!-- Inner hot core -->
+                <circle id="spark-core" r="4" fill="#fff" filter="url(#glow)" />
+                <!-- Outer glow halo -->
+                <circle id="spark-halo" r="8" fill="rgba(255, 200, 100, 0.3)" filter="url(#glow)" />
+                <g id="particle-emitter"></g>
+            </g>
+        </svg>
+    </div>
 
-    <header id="hero">
-        <div class="container hero-grid">
-            <div class="hero-content">
-                <div class="status-badge">
-                    <span class="dot"></span> Available for work
+    <main>
+        <header id="hero">
+            <div class="container hero-layout">
+                <div class="hero-image-wrapper" id="hero-img-box">
+                    <img src="images/DSCF6186-01.jpeg" alt="Amal Baby Mathews" class="profile-img">
+                    <div class="scanline"></div>
                 </div>
-                <h1>Amal Baby<br>Mathews<span class="accent-dot">.</span></h1>
-                <p class="role">Software Engineer<br><span class="faded">AI & Machine Learning</span></p>
-                
-                <div class="hero-cta">
-                    <a href="#projects" class="btn-primary">View Projects</a>
-                    <a href="#contact" class="btn-secondary">Contact Me</a>
+                <div class="hero-content">
+                    <div class="status-badge">
+                        <span class="blinking-dot"></span> SYSTEM ONLINE
+                    </div>
+                    <h1>AMAL BABY<br>MATHEWS</h1>
+                    <p class="subtitle">ENGINEER <span class="accent">//</span> AI & ML</p>
                 </div>
             </div>
+        </header>
 
-            <div class="hero-visual">
-                <div class="squircle-frame">
-                    <img src="images/DSCF6186-01.jpeg" alt="Amal Baby Mathews" class="profile-img">
+        <div class="timeline-container">
+            <section class="timeline-block left">
+                <div class="card glass">
+                    <span class="meta">01 // IDENTITY</span>
+                    <h2>THE PHILOSOPHY</h2>
+                    <p>Hi! I'm Amal. I speak tech, but I'm just a human figuring things out. Beyond code, I love hitting the gym, sci-fi movies, and deciphering the constantly changing code of NLP.</p>
+                    <div class="click-hint">[ + Click to Expand ]</div>
+                    
+                    <!-- Placeholder for expanded description -->
+                    <div class="description-placeholder">
+                        <p>I operate at the intersection of robust engineering and experimental AI. My work isn't just about training models; it's about architecting systems where traditional software reliability meets the stochastic nature of Large Language Models.</p>
+                        <div class="terminal-box">
+                            > User.status: "Optimizing..."<br>
+                            > User.drive: "Maximum"
+                        </div>
+                    </div>
                 </div>
+            </section>
+
+            <section class="timeline-block right">
+                <div class="card glass">
+                    <span class="meta">02 // ARSENAL</span>
+                    <h2>CORE FOCUS</h2>
+                    <div class="skill-grid">
+                        <div class="skill-set">
+                            <h3>ENGINEERING</h3>
+                            <ul>
+                                <li>Software Engineering</li>
+                                <li>Python & Django</li>
+                                <li>Web Architecture</li>
+                            </ul>
+                        </div>
+                        <div class="skill-set highlight">
+                            <h3>AI / ML</h3>
+                            <ul>
+                                <li>LLMs & RAG</li>
+                                <li>Computer Vision (VLM)</li>
+                                <li>NeuroEvolution (NEAT)</li>
+                            </ul>
+                        </div>
+                    </div>
+                    <div class="click-hint">[ + Click to Expand ]</div>
+                    <div class="description-placeholder">
+                        <p>Specializing in bridge-building between classic software paradigms and modern AI behaviors.</p>
+                        <div class="tech-details">
+                            <ul>
+                                <li><strong>Full Stack AI:</strong> Integrating Vector Databases (Faiss/pgvector) with Django backends.</li>
+                                <li><strong>Vision Pipelines:</strong> From OpenCV pre-processing to VLM inference.</li>
+                                <li><strong>Cloud & Deploy:</strong> Containerization and scalable inference endpoints.</li>
+                            </ul>
+                        </div>
+                    </div>
+                </div>
+            </section>
+
+            <div class="projects-wrapper">
+                <div class="section-title-center">
+                    <h2>SELECTED WORKS</h2>
+                </div>
+
+                <article class="timeline-block left">
+                    <div class="card project-card">
+                        <div class="project-media">
+                            <img src="images/django1.gif" alt="Django App">
+                        </div>
+                        <div class="project-info">
+                            <h3>Django Web App</h3>
+                            <div class="tags"><span>RAG</span><span>Django</span><span>Faiss DB</span></div>
+                            <p>Next-gen web app with personalized workspaces and AI chat.</p>
+                            <div class="click-hint">[ + Click to Expand ]</div>
+                            <div class="description-placeholder">
+                                <div class="tech-details">
+                                    <p><strong>Repository:</strong> djnappnew | <strong>Architecture:</strong> Modular Django Monolith</p>
+                                    <br>
+                                    <p>A sophisticated RAG (Retrieval Augmented Generation) pipeline designed for document interaction.</p>
+                                    <ul>
+                                        <li><strong>Aweapp/:</strong> Core logic handling LLM interfacing and prompt engineering.</li>
+                                        <li><strong>fileupload/:</strong> Decoupled app for ingesting user documents (PDF/TXT) before indexing.</li>
+                                        <li><strong>register/:</strong> Isolated authentication system separating user management from AI logic.</li>
+                                    </ul>
+                                    <p><strong>Workflow:</strong> Login &rarr; Upload Document (saved to media/files) &rarr; Chat via Faiss Vector Retrieval.</p>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </article>
+
+                <article class="timeline-block right">
+                    <div class="card project-card">
+                        <div class="project-media">
+                            <img src="images/neat1.jpeg" alt="NEAT Pong">
+                        </div>
+                        <div class="project-info">
+                            <h3>NEAT RL (Pong)</h3>
+                            <div class="tags"><span>Reinforcement Learning</span><span>NEAT</span><span>Game AI</span></div>
+                            <p>Evolving neural network architectures to master Pong via natural selection.</p>
+                            <div class="click-hint">[ + Click to Expand ]</div>
+                            <div class="description-placeholder">
+                                <div class="tech-details">
+                                    <p><strong>Repository:</strong> PONG-GAME-ML-amal | <strong>Method:</strong> NeuroEvolution of Augmenting Topologies</p>
+                                    <br>
+                                    <p>An implementation of evolutionary algorithms where the AI agent learns to play Pong from scratch without pre-existing data.</p>
+                                    <ul>
+                                        <li><strong>Inputs:</strong> Ball Y-Coord, Paddle Y-Coord, Distance Delta.</li>
+                                        <li><strong>Outputs:</strong> 2 Output Neurons (UP / DOWN).</li>
+                                        <li><strong>Fitness Function:</strong> Agents are rewarded for hitting the ball and penalized for misses. "Dumb" networks die; succesful ones breed.</li>
+                                    </ul>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </article>
+
+                <article class="timeline-block left">
+                    <div class="card project-card">
+                        <div class="project-media">
+                            <img src="images/uploaded_section.png" alt="VLM Test">
+                        </div>
+                        <div class="project-info">
+                            <h3>VLM Moondream Test</h3>
+                            <div class="tags"><span>Computer Vision</span><span>Streamlit</span><span>OpenCV</span></div>
+                            <p>Advanced analysis using Moondream AI 0.5 with object overlays.</p>
+                            <div class="click-hint">[ + Click to Expand ]</div>
+                            <div class="description-placeholder">
+                                <div class="tech-details">
+                                    <p><strong>Repository:</strong> VLM_testing | <strong>Stack:</strong> Streamlit, PyTorch, OpenCV</p>
+                                    <br>
+                                    <p>An R&D Sandbox for benchmarking Small Language Models (SLMs) on vision tasks.</p>
+                                    <ul>
+                                        <li><strong>Benchmarking:</strong> Parallel testing of Moondream, SmolVLM, and Janus models.</li>
+                                        <li><strong>Visual Feedback:</strong> Programmatic drawing of bounding boxes on video frames using OpenCV based on AI coordinate outputs.</li>
+                                        <li><strong>UI:</strong> Streamlit-based interface (moondream_ui.py) for rapid prototyping and testing.</li>
+                                    </ul>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </article>
             </div>
         </div>
-    </header>
-
-    <main id="main-content">
-        
-        <section id="about" class="section-pad">
-            <div class="container">
-                <div class="section-header">
-                    <span class="mono-tag">01 // About</span>
-                    <h2>The Philosophy</h2>
-                </div>
-
-                <div class="about-grid">
-                    <div class="bio-text">
-                        <p>Hi! I'm Amal. I speak tech, but I'm just a human figuring things out. Beyond code, I love hitting the gym, sci-fi movies, and deciphering the constantly changing code of NLP.</p>
-                    </div>
-                    <div class="quote-box">
-                        <p>"Training models is like giving a toddler fingerpaints—messy but sometimes brilliant."</p>
-                    </div>
-                </div>
-            </div>
-        </section>
-
-        <section id="skills" class="section-pad">
-            <div class="container">
-                <div class="section-header">
-                    <span class="mono-tag">02 // Stack</span>
-                    <h2>Core Focus</h2>
-                </div>
-                
-                <div class="skills-wrapper">
-                    <div class="skill-card">
-                        <h3>Engineering</h3>
-                        <ul>
-                            <li>Software Engineering</li>
-                            <li>Python & Django</li>
-                            <li>Web Architecture</li>
-                        </ul>
-                    </div>
-                    <div class="skill-card highlight">
-                        <h3>Artificial Intelligence</h3>
-                        <ul>
-                            <li>LLMs & RAG</li>
-                            <li>Computer Vision (VLM)</li>
-                            <li>NeuroEvolution (NEAT)</li>
-                        </ul>
-                    </div>
-                    <div class="skill-card">
-                        <h3>Creative</h3>
-                        <ul>
-                            <li>3D Animation</li>
-                            <li>UI/UX Logic</li>
-                            <li>Prompt Engineering</li>
-                        </ul>
-                    </div>
-                </div>
-            </div>
-        </section>
-
-        <section id="projects" class="section-pad">
-            <div class="container">
-                <div class="section-header">
-                    <span class="mono-tag">03 // Works</span>
-                    <h2>Selected Projects</h2>
-                </div>
-
-                <article class="project-card">
-                    <div class="project-info">
-                        <h3>Django Web App</h3>
-                        <div class="tags"><span>Django</span><span>LLM</span><span>Faiss DB</span></div>
-                        <p>A next-gen web app with personalized workspaces and AI chat. Features custom user index storage and semantic prompt generation.</p>
-                        <a href="https://github.com/Amal-Baby-Mathews/djnappnew" target="_blank" class="link-arrow">View Code <i class="fa-solid fa-arrow-right"></i></a>
-                    </div>
-                    <div class="project-img">
-                        <img src="images/django1.gif" alt="Django App">
-                    </div>
-                </article>
-
-                <article class="project-card reverse">
-                    <div class="project-info">
-                        <h3>NEAT Stock Prediction</h3>
-                        <div class="tags"><span>NEAT</span><span>Finance</span><span>Time Series</span></div>
-                        <p>Investigating NeuroEvolution to predict TSLA stock trends. Automatically evolves neural network architectures based on historical OHLC data.</p>
-                        <a href="https://github.com/Amal-Baby-Mathews/PONG-GAME-ML-amal.git" target="_blank" class="link-arrow">View Code <i class="fa-solid fa-arrow-right"></i></a>
-                    </div>
-                    <div class="project-img">
-                        <img src="images/neat1.jpeg" alt="NEAT Graph">
-                    </div>
-                </article>
-
-                <article class="project-card">
-                    <div class="project-info">
-                        <h3>VLM Moondream Test</h3>
-                        <div class="tags"><span>Computer Vision</span><span>Streamlit</span><span>OpenCV</span></div>
-                        <p>Testing Moondream AI 0.5 for advanced analysis. Includes object detection overlays and video frame analysis.</p>
-                        <a href="https://github.com/Amal-Baby-Mathews/VLM_testing" target="_blank" class="link-arrow">View Code <i class="fa-solid fa-arrow-right"></i></a>
-                    </div>
-                    <div class="project-img">
-                        <img src="images/uploaded_section.png" alt="VLM Analysis">
-                    </div>
-                </article>
-            </div>
-        </section>
 
         <footer id="contact">
-            <div class="container">
-                <div class="footer-layout">
-                    <div class="footer-main">
-                        <h2>Let's build something<br>impossible.</h2>
-                        <a href="mailto:amalbmat2001@gmail.com" class="email-link">amalbmat2001@gmail.com</a>
+            <div class="footer-glow-bg"></div>
+            <div class="container footer-content">
+                <h2 class="giant-text">LET'S BUILD<br>THE IMPOSSIBLE.</h2>
+                <div class="contact-grid">
+                    <div class="contact-col">
+                        <span class="lbl">EMAIL</span>
+                        <a href="mailto:amalbmat2001@gmail.com">amalbmat2001@gmail.com</a>
                     </div>
-                    <div class="footer-social">
-                        <a href="https://www.linkedin.com/in/amal-mathews/" target="_blank">LinkedIn</a>
-                        <a href="https://github.com/Amal-Baby-Mathews" target="_blank">GitHub</a>
+                    <div class="contact-col">
+                        <span class="lbl">PHONE</span>
                         <a href="tel:+919188458610">+91 9188458610</a>
+                    </div>
+                    <div class="contact-col">
+                        <span class="lbl">SOCIAL</span>
+                        <div class="socials">
+                            <a href="https://www.linkedin.com/in/amal-mathews/" target="_blank">LinkedIn</a>
+                            <a href="https://github.com/Amal-Baby-Mathews" target="_blank">GitHub</a>
+                        </div>
                     </div>
                 </div>
                 <div class="copyright">
@@ -159,9 +454,292 @@
                 </div>
             </div>
         </footer>
-
     </main>
 
-    <script src="script.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.2/gsap.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.2/ScrollTrigger.min.js"></script>
+    
+    <script>
+        document.addEventListener("DOMContentLoaded", () => {
+            gsap.registerPlugin(ScrollTrigger);
+
+            // Slightly bigger spark as requested
+            const SPARK_SCALE = 2.2; 
+
+            const svg = document.querySelector("#main-svg");
+            const visualEngine = document.querySelector(".visual-engine");
+            const fuseBurnt = document.querySelector("#fuse-burnt");
+            const fuseUnburnt = document.querySelector("#fuse-unburnt");
+            const sparkGroup = document.querySelector("#spark-assembly");
+            const footer = document.querySelector("#contact");
+            const targetText = document.querySelector(".giant-text"); 
+            
+            // Interaction: Card Expansion
+            const allCards = document.querySelectorAll('.card');
+            
+            allCards.forEach(card => {
+                card.addEventListener('click', (e) => {
+                    // Toggle expanded class
+                    const isExpanded = card.classList.contains('expanded');
+                    
+                    // Close others (optional, feels cleaner)
+                    allCards.forEach(c => c.classList.remove('expanded'));
+
+                    if (!isExpanded) {
+                        card.classList.add('expanded');
+                    }
+                    
+                    // CRITICAL: The expansion changes the page height and element positions.
+                    // The wire path needs to update *while* the transition happens, 
+                    // otherwise the spark will look detached until the transition ends.
+                    
+                    // Run a loop for 600ms (duration of css transition + buffer)
+                    let start = performance.now();
+                    function animateLayoutUpdate() {
+                        const now = performance.now();
+                        if (now - start < 600) {
+                            updateMetrics();
+                            requestAnimationFrame(animateLayoutUpdate);
+                        } else {
+                            // Final update to be sure
+                            updateMetrics();
+                        }
+                    }
+                    requestAnimationFrame(animateLayoutUpdate);
+                });
+            });
+
+            let screenW, screenH, totalDocHeight, centerX;
+            let pathTotalLength = 0;
+            
+            let ignitionPoints = [];
+
+            // =============================================
+            // 1. DYNAMIC PATH CALCULATION & TRIGGER MAPPING
+            // =============================================
+            function updateMetrics() {
+                screenW = window.innerWidth;
+                screenH = window.innerHeight;
+                totalDocHeight = document.body.scrollHeight;
+                centerX = screenW / 2;
+                
+                ignitionPoints = [];
+
+                visualEngine.style.height = totalDocHeight + 'px';
+                svg.setAttribute("viewBox", `0 0 ${screenW} ${totalDocHeight}`);
+                
+                let points = [{x: centerX, y: 0}];
+
+                // Hero
+                const heroSection = document.querySelector('#hero');
+                const heroImgBox = document.querySelector('#hero-img-box');
+                if(heroSection) {
+                    points.push({x: centerX, y: heroSection.offsetHeight});
+                    
+                    if(heroImgBox) {
+                        const rect = heroImgBox.getBoundingClientRect();
+                        const absY = rect.top + window.scrollY;
+                        ignitionPoints.push({
+                            element: heroImgBox,
+                            y: absY + (rect.height / 2), 
+                            type: 'card'
+                        });
+                    }
+                }
+
+                // Cards
+                const blocks = document.querySelectorAll('.timeline-block .card'); 
+                blocks.forEach(card => {
+                    const rect = card.getBoundingClientRect();
+                    const absoluteY = rect.top + window.scrollY;
+                    const centerY = absoluteY + (rect.height / 2);
+                    const cardCenterX = rect.left + (rect.width / 2);
+
+                    points.push({x: cardCenterX, y: centerY});
+
+                    ignitionPoints.push({
+                        element: card,
+                        y: absoluteY, // Trigger at top edge
+                        type: 'card'
+                    });
+                });
+
+                // Footer
+                const footerSection = document.querySelector('#contact');
+                if(footerSection) {
+                    const footerY = footerSection.getBoundingClientRect().top + window.scrollY;
+                    points.push({x: centerX, y: footerY});
+                    points.push({x: centerX, y: totalDocHeight}); 
+                }
+
+                let d = `M ${points[0].x},${points[0].y}`;
+                for(let i=1; i<points.length; i++) {
+                    d += ` L ${points[i].x},${points[i].y}`;
+                }
+
+                fuseUnburnt.setAttribute("d", d);
+                pathTotalLength = fuseUnburnt.getTotalLength();
+                fuseBurnt.setAttribute("d", generateJaggedPathFromPoints(points));
+
+                fuseUnburnt.style.strokeDasharray = "1 1";
+                fuseUnburnt.style.strokeDashoffset = "0";
+            }
+
+            function generateJaggedPathFromPoints(points) {
+                let d = `M ${points[0].x},${points[0].y}`;
+                for(let i=0; i<points.length-1; i++) {
+                    const start = points[i];
+                    const end = points[i+1];
+                    const dx = end.x - start.x;
+                    const dy = end.y - start.y;
+                    const dist = Math.sqrt(dx*dx + dy*dy);
+                    const segments = Math.max(5, Math.floor(dist / 10)); 
+                    
+                    for(let j=1; j<=segments; j++) {
+                        const ratio = j/segments;
+                        const tx = start.x + dx * ratio;
+                        const ty = start.y + dy * ratio;
+                        const offsetX = (Math.random() - 0.5) * 6;
+                        const offsetY = (Math.random() - 0.5) * 2;
+                        d += ` L ${tx + offsetX},${ty + offsetY}`;
+                    }
+                }
+                return d;
+            }
+
+            // Observe resize events
+            const resizeObserver = new ResizeObserver(entries => {
+                requestAnimationFrame(() => {
+                    updateMetrics();
+                    ScrollTrigger.refresh();
+                });
+            });
+            resizeObserver.observe(document.body);
+
+            window.onload = () => {
+                updateMetrics();
+                ScrollTrigger.refresh();
+            };
+
+            // =============================================
+            // 2. ENHANCED SPARK ANIMATION
+            // =============================================
+            const density = 40; // High density for realism
+
+            const particleEmitter = document.querySelector("#particle-emitter");
+            while (particleEmitter.firstChild) { particleEmitter.removeChild(particleEmitter.firstChild); }
+
+            // Create Spark Particles
+            for (let i = 0; i < density; i++) {
+                const rayGroup = document.createElementNS("http://www.w3.org/2000/svg", "g");
+                const angle = (360 / density) * i;
+                gsap.set(rayGroup, { rotation: angle });
+                
+                const line = document.createElementNS("http://www.w3.org/2000/svg", "line");
+                line.setAttribute("x1", 2 * SPARK_SCALE); line.setAttribute("y1", 0);
+                line.setAttribute("x2", 8 * SPARK_SCALE); line.setAttribute("y2", 0);
+                line.setAttribute("stroke", i % 2 === 0 ? "#fff" : "#ffaa00"); 
+                line.setAttribute("stroke-width", (0.5 + Math.random()) * SPARK_SCALE); 
+                line.setAttribute("stroke-linecap", "round"); 
+                line.style.opacity = 0;
+                rayGroup.appendChild(line);
+
+                const ember = document.createElementNS("http://www.w3.org/2000/svg", "circle");
+                ember.setAttribute("r", (0.4 + Math.random() * 0.4) * SPARK_SCALE); 
+                ember.setAttribute("fill", i % 3 === 0 ? "#ff4400" : "#ffcc00"); 
+                ember.style.opacity = 0;
+                rayGroup.appendChild(ember);
+
+                particleEmitter.appendChild(rayGroup);
+
+                const delay = Math.random() * 0.5;
+
+                // Randomize blast lines
+                gsap.timeline({ repeat: -1, delay: delay, repeatRefresh: true })
+                    .to(line, {
+                        attr: { x2: () => (14 + Math.random() * 18) * SPARK_SCALE }, 
+                        strokeDasharray: 20 * SPARK_SCALE, strokeDashoffset: 0,
+                        opacity: () => 0.7 + Math.random() * 0.3,
+                        duration: () => 0.05 + Math.random() * 0.1, ease: "power2.out"
+                    })
+                    .to(line, {
+                        strokeDashoffset: -20 * SPARK_SCALE, opacity: 0, duration: () => 0.05 + Math.random() * 0.1,
+                    });
+
+                // Randomize flying embers
+                gsap.timeline({ repeat: -1, delay: delay, repeatRefresh: true })
+                    .set(ember, { x: 0, y: 0, opacity: 1, scale: 1 })
+                    .to(ember, {
+                        x: () => (25 + Math.random() * 35) * SPARK_SCALE,
+                        y: () => (-15 + Math.random() * 30) * SPARK_SCALE,
+                        opacity: 0, scale: 0, duration: () => 0.3 + Math.random() * 0.5, ease: "power1.out"
+                    });
+            }
+
+            // Pulse core
+            gsap.to("#spark-core", {
+                scale: 1.3, opacity: 0.9,
+                duration: 0.05, repeat: -1, yoyo: true
+            });
+            gsap.to("#spark-halo", {
+                scale: 1.6, opacity: 0.6,
+                duration: 0.1, repeat: -1, yoyo: true
+            });
+
+            // =============================================
+            // 3. LOGIC LOOP
+            // =============================================
+            ScrollTrigger.create({
+                trigger: "body",
+                start: "top top",
+                end: "bottom bottom",
+                scrub: 0, 
+                onUpdate: (self) => {
+                    const progress = self.progress;
+                    const point = fuseUnburnt.getPointAtLength(progress * pathTotalLength);
+                    
+                    sparkGroup.setAttribute("transform", `translate(${point.x}, ${point.y})`);
+                    fuseUnburnt.style.strokeDashoffset = -progress;
+
+                    const currentSparkY = point.y;
+
+                    // Light up sections when passed
+                    ignitionPoints.forEach(trigger => {
+                        if (currentSparkY > trigger.y) {
+                            if (!trigger.element.classList.contains('ignited')) {
+                                trigger.element.classList.add('ignited');
+                            }
+                        } else {
+                            if (trigger.element.classList.contains('ignited')) {
+                                trigger.element.classList.remove('ignited');
+                            }
+                        }
+                    });
+
+                    // Footer detonation
+                    if(targetText) {
+                        const textRect = targetText.getBoundingClientRect();
+                        const absoluteTriggerY = textRect.top + window.scrollY + 50;
+
+                        if (currentSparkY >= absoluteTriggerY) {
+                            footer.classList.add("detonation-active");
+                        } else {
+                            footer.classList.remove("detonation-active");
+                        }
+                    }
+                }
+            });
+
+            // Entrance Animations
+            gsap.utils.toArray(".timeline-block").forEach(block => {
+                gsap.from(block.querySelector(".card"), {
+                    y: 50, opacity: 0, duration: 1, ease: "power3.out",
+                    scrollTrigger: {
+                        trigger: block, start: "top 85%", toggleActions: "play none none reverse"
+                    }
+                });
+            });
+        });
+    </script>
 </body>
 </html>
