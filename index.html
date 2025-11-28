@@ -12,241 +12,131 @@
     <!-- Icons -->
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     
+    <!-- Tailwind CSS -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script>
+        tailwind.config = {
+            theme: {
+                extend: {
+                    colors: {
+                        bg: '#0a0a0a',
+                        text: '#f0f0f0',
+                        accent: '#ff2a2a',
+                        glass: 'rgba(20, 20, 20, 0.6)',
+                    },
+                    fontFamily: {
+                        head: ['Syncopate', 'sans-serif'],
+                        body: ['Space Grotesk', 'sans-serif'],
+                    },
+                    animation: {
+                        'blink-dot': 'blink 2s infinite',
+                        'scanline': 'scanline 3s linear infinite',
+                    },
+                    keyframes: {
+                        blink: {
+                            '0%, 100%': { opacity: '1' },
+                            '50%': { opacity: '0.3' },
+                        },
+                        scanline: {
+                            '0%': { top: '-20%', opacity: '0' },
+                            '10%': { opacity: '0.4' },
+                            '90%': { opacity: '0.4' },
+                            '100%': { top: '120%', opacity: '0' }
+                        }
+                    }
+                }
+            }
+        }
+    </script>
+
+    <!-- GSAP -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.2/gsap.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.2/ScrollTrigger.min.js"></script>
+
     <style>
-        /* =========================================
-           RESET & VARS
-           ========================================= */
-        :root {
-            --bg: #0a0a0a;
-            --text: #f0f0f0;
-            --accent: #ff2a2a; 
-            --glass: rgba(20, 20, 20, 0.6); 
-            --border: rgba(255, 255, 255, 0.1);
-            
-            --font-head: 'Syncopate', sans-serif;
-            --font-body: 'Space Grotesk', sans-serif;
-        }
+        /* Global resets and scroll behavior */
+        html { scroll-behavior: smooth; background: #0a0a0a; }
+        body { overflow-x: hidden; position: relative; }
+        
+        /* Custom scrollbar */
+        ::-webkit-scrollbar { width: 8px; }
+        ::-webkit-scrollbar-track { background: #0a0a0a; }
+        ::-webkit-scrollbar-thumb { background: #333; border-radius: 4px; }
+        ::-webkit-scrollbar-thumb:hover { background: #ff2a2a; }
 
-        * { margin: 0; padding: 0; box-sizing: border-box; }
-        html { scroll-behavior: smooth; background: var(--bg); }
-        body { font-family: var(--font-body); color: var(--text); overflow-x: hidden; position: relative; }
-
-        /* =========================================
-           VISUAL ENGINE
-           ========================================= */
-        .visual-engine {
-            position: absolute;
-            top: 0; left: 0;
-            width: 100%; 
-            height: 100%;
-            z-index: 1; 
-            pointer-events: none;
-            overflow: visible;
-        }
-        #main-svg { 
-            width: 100%; 
-            height: 100%; 
-            overflow: visible; 
-        }
-
+        /* Fuse paths */
         #fuse-burnt {
             stroke: #222; 
             stroke-width: 2px;
             fill: none;
             opacity: 0.8;
         }
-
         #fuse-unburnt {
             stroke: #555; 
             stroke-width: 3px;
             fill: none;
             stroke-linecap: butt;
+            /* Important: Transition for smoothness */
+            transition: stroke-dashoffset 0.1s linear;
         }
 
-        /* =========================================
-           LAYOUT
-           ========================================= */
-        main { position: relative; z-index: 2; }
-        .container { width: 90%; max-width: 1200px; margin: 0 auto; }
-
-        #hero { height: 100vh; display: flex; align-items: center; justify-content: center; position: relative; }
-        .hero-layout { display: flex; align-items: center; justify-content: space-between; gap: 4rem; width: 100%; }
-        
-        .hero-image-wrapper { 
-            width: 300px; height: 400px; 
-            position: relative; 
-            border: 1px solid var(--border); 
-            overflow: hidden; 
-            background: var(--bg); 
-            z-index: 5;
-            transition: border-color 0.3s, box-shadow 0.3s, transform 0.3s;
-        }
-        .profile-img { width: 100%; height: 100%; object-fit: cover; filter: grayscale(100%); transition: 0.5s; }
-        .hero-image-wrapper:hover .profile-img { filter: grayscale(0%); }
-        
-        /* IGNITED STATE FOR HERO IMAGE */
-        .hero-image-wrapper.ignited {
-            border-color: var(--accent);
-            box-shadow: 0 0 35px rgba(255, 42, 42, 0.4);
-            transform: scale(1.02);
-        }
-
-        .hero-content h1 { font-family: var(--font-head); font-size: 4rem; line-height: 1; font-weight: 700; margin: 1rem 0; text-transform: uppercase; }
-        .subtitle { font-size: 1.2rem; color: #888; letter-spacing: 2px; }
-        .status-badge { display: inline-flex; align-items: center; gap: 10px; font-size: 0.8rem; color: var(--accent); margin-bottom: 1rem; border: 1px solid rgba(255, 42, 42, 0.3); padding: 5px 10px; }
-        .blinking-dot { width: 6px; height: 6px; background: var(--accent); border-radius: 50%; animation: blink 2s infinite; }
-
-        .timeline-container { position: relative; padding: 100px 0; max-width: 1400px; margin: 0 auto; }
-        .timeline-block { display: flex; margin-bottom: 150px; position: relative; width: 100%; }
-        .timeline-block.left { justify-content: flex-start; padding-left: 10%; padding-right: 55%; }
-        .timeline-block.right { justify-content: flex-end; padding-right: 10%; padding-left: 55%; }
-
-        /* =========================================
-           CARDS & INTERACTION
-           ========================================= */
-        .card { 
-            background: rgba(10, 10, 10, 0.85); 
-            backdrop-filter: blur(12px); 
-            border: 1px solid var(--border); 
-            padding: 2.5rem; 
-            width: 100%; 
-            transition: transform 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275), border-color 0.3s, box-shadow 0.3s, background 0.3s; 
-            position: relative;
-            z-index: 10; 
-            overflow: hidden; 
-            cursor: pointer; /* Indicates clickability */
+        /* Card Expansion Utilities */
+        .card .expand-content {
+            transition: max-height 0.5s ease-out, opacity 0.5s ease-out, margin-top 0.5s ease, padding-top 0.5s ease;
         }
         
-        /* Hover State (User Interaction) */
-        .card:hover {
-            transform: translateY(-8px);
-            border-color: rgba(255, 255, 255, 0.4);
-        }
-
-        /* Spark "Ignited" State (Visual Feedback from Scroll) */
+        /* Ignited States */
         .card.ignited {
-            border-color: var(--accent);
+            border-color: #ff2a2a;
             box-shadow: 0 0 40px rgba(255, 42, 42, 0.3), inset 0 0 20px rgba(255, 42, 42, 0.1);
-            background: rgba(20, 10, 10, 0.9);
+            background-color: rgba(20, 10, 10, 0.9);
         }
-        /* When ignited AND hovered */
-        .card.ignited:hover {
-             box-shadow: 0 0 50px rgba(255, 42, 42, 0.5), inset 0 0 30px rgba(255, 42, 42, 0.2);
-        }
-
         .card.ignited h2, .card.ignited h3 {
+            color: white;
             text-shadow: 0 0 15px rgba(255, 42, 42, 0.8);
-            color: #fff;
         }
         .card.ignited .meta {
-            text-shadow: 0 0 8px var(--accent);
-            color: #fff;
-        }
-        
-        .meta { font-family: var(--font-head); color: var(--accent); font-size: 0.8rem; display: block; margin-bottom: 1rem; transition: text-shadow 0.3s, color 0.3s; }
-        h2 { font-family: var(--font-head); font-size: 2rem; margin-bottom: 1.5rem; transition: color 0.3s, text-shadow 0.3s; }
-        p { line-height: 1.6; color: #ccc; font-size: 1.1rem; }
-        
-        /* =========================================
-           EXPANDABLE CONTENT
-           ========================================= */
-        .click-hint {
-            font-size: 0.75rem;
-            color: #555;
-            margin-top: 1rem;
-            text-transform: uppercase;
-            letter-spacing: 1px;
-            opacity: 0.6;
-            transition: opacity 0.3s;
-        }
-        .card:hover .click-hint { opacity: 1; color: var(--accent); }
-
-        .description-placeholder {
-            max-height: 0;
-            opacity: 0;
-            overflow: hidden;
-            transition: max-height 0.5s ease-out, opacity 0.4s ease-out, margin-top 0.4s ease, padding-top 0.4s ease;
-            border-top: 1px solid transparent;
-            margin-top: 0;
-            padding-top: 0;
-            color: #999;
-            font-size: 1rem;
+            text-shadow: 0 0 8px #ff2a2a;
+            color: white;
         }
 
-        /* Expanded State (Triggered by Click) */
-        .card.expanded .description-placeholder {
-            max-height: 1200px; /* Allow enough space */
-            opacity: 1;
-            margin-top: 1.5rem;
-            padding-top: 1.5rem;
-            border-top: 1px solid rgba(255, 42, 42, 0.3);
-        }
-        .card.expanded {
-            background: rgba(15, 15, 15, 0.95);
+        #hero-img-box.ignited {
+            border-color: #ff2a2a;
+            box-shadow: 0 0 35px rgba(255, 42, 42, 0.4);
+            transform: scale(1.05);
         }
 
-        /* Project detail styling */
-        .tech-details {
-            margin-top: 1rem;
-            font-size: 0.95rem;
+        /* Footer Detonation */
+        .detonation-glow {
+            width: 0; height: 0; opacity: 0;
+            transition: width 0.5s, height 0.5s, opacity 0.5s;
         }
-        .tech-details strong { color: #fff; }
-        .tech-details ul { margin-left: 1.2rem; margin-bottom: 1rem; margin-top: 0.5rem; }
-        .tech-details li { margin-bottom: 0.5rem; color: #aaa; }
-
-        .terminal-box { background: #000; border-left: 2px solid var(--accent); padding: 1rem; margin-top: 1.5rem; font-family: monospace; font-size: 0.9rem; color: #aaa; }
-
-        .skill-grid { display: grid; gap: 2rem; }
-        .skill-set h3 { font-size: 1rem; color: #fff; border-bottom: 1px solid #333; padding-bottom: 0.5rem; margin-bottom: 0.5rem; transition: text-shadow 0.3s; }
-        .skill-set.highlight h3 { color: var(--accent); border-color: var(--accent); }
-        .skill-set ul { list-style: none; }
-        .skill-set li { color: #888; margin-bottom: 0.3rem; font-size: 0.95rem; }
-
-        .projects-wrapper { margin-top: 100px; }
-        .section-title-center { text-align: center; margin-bottom: 80px; }
-        .project-card { padding: 0; overflow: hidden; }
-        .project-media img { width: 100%; display: block; filter: grayscale(80%); transition: 0.5s; }
-        .project-card:hover .project-media img { filter: grayscale(0%); }
-        .project-info { padding: 2rem; }
-        .project-info h3 { transition: text-shadow 0.3s; }
-        .tags span { display: inline-block; font-size: 0.75rem; background: #222; padding: 4px 8px; margin-right: 5px; margin-bottom: 10px; color: #aaa; }
-        .btn-link { display: inline-block; margin-top: 15px; color: var(--text); text-decoration: none; border-bottom: 1px solid var(--accent); padding-bottom: 2px; font-size: 0.9rem; }
-
-        #contact { 
-            position: relative; 
-            padding: 150px 0 50px; 
-            text-align: center; 
-            overflow: hidden; 
-            z-index: 20; 
-            background-color: var(--bg); 
-            border-top: 1px solid #222;
+        #contact.detonation-active .detonation-glow {
+            width: 150vw; height: 150vw; opacity: 1;
         }
-
-        .footer-glow-bg { position: absolute; top: 50%; left: 50%; transform: translate(-50%, -50%); width: 0%; height: 0%; background: radial-gradient(circle, rgba(255,42,42,0.8) 0%, rgba(0,0,0,0) 70%); z-index: -1; transition: width 0.3s, height 0.3s, opacity 0.3s; opacity: 0; pointer-events: none; }
-        #contact.detonation-active .footer-glow-bg { width: 150vw; height: 150vw; opacity: 1; }
-        #contact.detonation-active .giant-text { color: #fff; text-shadow: 0 0 30px rgba(255, 255, 255, 0.8); }
-        .giant-text { font-family: var(--font-head); font-size: 3.5rem; margin-bottom: 4rem; transition: 0.3s; }
-        .contact-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 2rem; border-top: 1px solid #222; padding-top: 3rem; margin-bottom: 3rem; }
-        .contact-col { display: flex; flex-direction: column; align-items: center; }
-        .lbl { font-size: 0.8rem; color: #555; margin-bottom: 0.5rem; letter-spacing: 1px; }
-        .contact-col a { color: #fff; text-decoration: none; font-size: 1.1rem; }
-        .contact-col a:hover { color: var(--accent); }
-        .copyright { color: #444; font-size: 0.8rem; }
-
-        @keyframes blink { 0%, 100% { opacity: 1; } 50% { opacity: 0.3; } }
-        @media (max-width: 768px) {
-            .hero-layout { flex-direction: column; text-align: center; }
-            .hero-content h1 { font-size: 2.5rem; }
-            .timeline-block.left, .timeline-block.right { padding: 0 20px; justify-content: center; }
-            .contact-grid { grid-template-columns: 1fr; gap: 2rem; }
-            .giant-text { font-size: 2rem; }
+        #contact.detonation-active #giant-text {
+            color: white;
+            text-shadow: 0 0 30px rgba(255, 255, 255, 0.8);
         }
     </style>
+<script type="importmap">
+{
+  "imports": {
+    "react": "https://aistudiocdn.com/react@^19.2.0",
+    "react-dom/": "https://aistudiocdn.com/react-dom@^19.2.0/",
+    "react/": "https://aistudiocdn.com/react@^19.2.0/",
+    "gsap": "https://aistudiocdn.com/gsap@^3.13.0",
+    "gsap/": "https://aistudiocdn.com/gsap@^3.13.0/",
+    "lucide-react": "https://aistudiocdn.com/lucide-react@^0.555.0"
+  }
+}
+</script>
 </head>
-<body class="loading">
+<body class="bg-bg text-text font-body selection:bg-accent selection:text-white">
 
-    <div class="visual-engine">
-        <svg id="main-svg">
+    <!-- VISUAL ENGINE LAYER -->
+    <div id="visual-engine" class="absolute top-0 left-0 w-full pointer-events-none z-10 overflow-visible">
+        <svg id="main-svg" class="w-full h-full overflow-visible">
             <defs>
                 <filter id="glow" x="-50%" y="-50%" width="200%" height="200%">
                     <feGaussianBlur stdDeviation="3.5" result="coloredBlur"/>
@@ -258,332 +148,415 @@
             </defs>
             
             <path id="fuse-burnt" vector-effect="non-scaling-stroke" />
-            <path id="fuse-unburnt" vector-effect="non-scaling-stroke" pathLength="1" />
+            <path id="fuse-unburnt" vector-effect="non-scaling-stroke" />
             
-            <g id="spark-assembly">
-                <!-- Inner hot core -->
+            <!-- Spark Assembly (Initially hidden) -->
+            <g id="spark-assembly" style="opacity: 0;">
                 <circle id="spark-core" r="4" fill="#fff" filter="url(#glow)" />
-                <!-- Outer glow halo -->
                 <circle id="spark-halo" r="8" fill="rgba(255, 200, 100, 0.3)" filter="url(#glow)" />
                 <g id="particle-emitter"></g>
             </g>
         </svg>
     </div>
 
-    <main>
-        <header id="hero">
-            <div class="container hero-layout">
-                <div class="hero-image-wrapper" id="hero-img-box">
-                    <img src="images/DSCF6186-01.jpeg" alt="Amal Baby Mathews" class="profile-img">
-                    <div class="scanline"></div>
+    <!-- MAIN CONTENT -->
+    <main class="relative z-20">
+        
+        <!-- HERO -->
+        <header id="hero" class="h-screen flex items-center justify-center relative">
+            <div class="container mx-auto px-4 max-w-[1200px] flex flex-col md:flex-row items-center justify-between gap-8 md:gap-16 z-20">
+                
+                <!-- Profile Image -->
+                <div id="hero-img-box" class="relative w-[300px] h-[400px] border border-white/10 overflow-hidden bg-bg z-20 transition-all duration-300 group">
+                    <img src="images/DSCF6186-01.jpeg" alt="Amal Baby Mathews" class="w-full h-full object-cover grayscale transition-all duration-500 group-hover:grayscale-0">
+                    <div class="absolute inset-0 bg-gradient-to-b from-transparent via-white/5 to-transparent h-[10px] w-full animate-scanline pointer-events-none"></div>
                 </div>
-                <div class="hero-content">
-                    <div class="status-badge">
-                        <span class="blinking-dot"></span> SYSTEM ONLINE
+        
+                <!-- Hero Text -->
+                <div class="text-center md:text-left">
+                    <div class="inline-flex items-center gap-2.5 text-sm text-accent mb-4 border border-accent/30 px-2.5 py-1.5">
+                        <span class="w-1.5 h-1.5 bg-accent rounded-full animate-blink-dot"></span>
+                        SYSTEM ONLINE
                     </div>
-                    <h1>AMAL BABY<br>MATHEWS</h1>
-                    <p class="subtitle">ENGINEER <span class="accent">//</span> AI & ML</p>
+                    <h1 class="font-head text-4xl md:text-6xl lg:text-7xl font-bold leading-none uppercase my-4">
+                        Amal Baby<br>Mathews
+                    </h1>
+                    <p class="text-gray-400 text-lg md:text-xl tracking-[2px] font-body">
+                        ENGINEER <span class="text-accent">//</span> AI & ML
+                    </p>
                 </div>
             </div>
         </header>
 
-        <div class="timeline-container">
-            <section class="timeline-block left">
-                <div class="card glass">
-                    <span class="meta">01 // IDENTITY</span>
-                    <h2>THE PHILOSOPHY</h2>
-                    <p>Hi! I'm Amal. I speak tech, but I'm just a human figuring things out. Beyond code, I love hitting the gym, sci-fi movies, and deciphering the constantly changing code of NLP.</p>
-                    <div class="click-hint">[ + Click to Expand ]</div>
+        <div class="relative py-24 max-w-[1400px] mx-auto">
+            
+            <!-- SECTION 1: PHILOSOPHY -->
+            <section class="timeline-block flex mb-36 justify-start px-5 md:pl-[10%] md:pr-[55%] w-full">
+                <div class="card w-full backdrop-blur-xl bg-black/85 border border-white/10 p-10 transition-all duration-400 relative z-20 overflow-hidden cursor-pointer hover:-translate-y-2 hover:border-white/40 group" data-fuse-target="true">
+                    <span class="meta font-head text-accent text-sm block mb-4 transition-all duration-300">01 // IDENTITY</span>
+                    <h2 class="font-head text-3xl mb-6 transition-all duration-300">THE PHILOSOPHY</h2>
+                    <p class="leading-relaxed text-gray-300 text-lg">
+                        Hi! I'm Amal. I speak tech, but I'm just a human figuring things out. Beyond code, I love hitting the gym, sci-fi movies, and deciphering the constantly changing code of NLP.
+                    </p>
+                    <div class="click-hint text-xs text-gray-600 mt-4 uppercase tracking-widest transition-opacity duration-300 opacity-60 group-hover:opacity-100 group-hover:text-accent group-[.expanded]:opacity-0">
+                        [ + Click to Expand ]
+                    </div>
                     
-                    <!-- Placeholder for expanded description -->
-                    <div class="description-placeholder">
-                        <p>I operate at the intersection of robust engineering and experimental AI. My work isn't just about training models; it's about architecting systems where traditional software reliability meets the stochastic nature of Large Language Models.</p>
-                        <div class="terminal-box">
-                            > User.status: "Optimizing..."<br>
-                            > User.drive: "Maximum"
+                    <div class="expand-content max-h-0 opacity-0 overflow-hidden border-t border-transparent mt-0 pt-0">
+                        <p class="text-gray-400 text-base mb-4">I operate at the intersection of robust engineering and experimental AI. My work isn't just about training models; it's about architecting systems where traditional software reliability meets the stochastic nature of Large Language Models.</p>
+                        <div class="bg-black border-l-2 border-accent p-4 font-mono text-sm text-gray-400">
+                            &gt; User.status: "Optimizing..."<br>
+                            &gt; User.drive: "Maximum"
                         </div>
                     </div>
                 </div>
             </section>
 
-            <section class="timeline-block right">
-                <div class="card glass">
-                    <span class="meta">02 // ARSENAL</span>
-                    <h2>CORE FOCUS</h2>
-                    <div class="skill-grid">
-                        <div class="skill-set">
-                            <h3>ENGINEERING</h3>
-                            <ul>
-                                <li>Software Engineering</li>
-                                <li>Python & Django</li>
-                                <li>Web Architecture</li>
-                            </ul>
+            <!-- SECTION 2: ARSENAL -->
+            <section class="timeline-block flex mb-36 justify-end px-5 md:pr-[10%] md:pl-[55%] w-full">
+                <div class="card w-full backdrop-blur-xl bg-black/85 border border-white/10 p-10 transition-all duration-400 relative z-20 overflow-hidden cursor-pointer hover:-translate-y-2 hover:border-white/40 group" data-fuse-target="true">
+                    <span class="meta font-head text-accent text-sm block mb-4 transition-all duration-300">02 // ARSENAL</span>
+                    <h2 class="font-head text-3xl mb-6 transition-all duration-300">CORE FOCUS</h2>
+                    <p class="leading-relaxed text-gray-300 text-lg">
+                        Specializing in bridge-building between classic software paradigms and modern AI behaviors.
+                    </p>
+
+                    <div class="expand-content max-h-0 opacity-0 overflow-hidden border-t border-transparent mt-0 pt-0">
+                        <div class="grid grid-cols-1 md:grid-cols-2 gap-8 mb-6 mt-4">
+                            <div class="border-b border-[#333] pb-2">
+                                <h3 class="text-base font-bold mb-2 text-white">ENGINEERING</h3>
+                                <ul class="list-none space-y-1">
+                                    <li class="text-gray-500 text-sm">Software Engineering</li>
+                                    <li class="text-gray-500 text-sm">Python & Django</li>
+                                    <li class="text-gray-500 text-sm">Web Architecture</li>
+                                </ul>
+                            </div>
+                            <div class="border-b border-accent/50 pb-2">
+                                <h3 class="text-base font-bold mb-2 text-accent">AI / ML</h3>
+                                <ul class="list-none space-y-1">
+                                    <li class="text-gray-500 text-sm">LLMs & RAG</li>
+                                    <li class="text-gray-500 text-sm">Computer Vision (VLM)</li>
+                                    <li class="text-gray-500 text-sm">NeuroEvolution (NEAT)</li>
+                                </ul>
+                            </div>
                         </div>
-                        <div class="skill-set highlight">
-                            <h3>AI / ML</h3>
-                            <ul>
-                                <li>LLMs & RAG</li>
-                                <li>Computer Vision (VLM)</li>
-                                <li>NeuroEvolution (NEAT)</li>
-                            </ul>
-                        </div>
-                    </div>
-                    <div class="click-hint">[ + Click to Expand ]</div>
-                    <div class="description-placeholder">
-                        <p>Specializing in bridge-building between classic software paradigms and modern AI behaviors.</p>
-                        <div class="tech-details">
-                            <ul>
+                        <div class="text-sm">
+                            <h4 class="text-white font-bold mb-2">Technical Depth:</h4>
+                            <ul class="list-disc pl-4 text-gray-400 space-y-1">
                                 <li><strong>Full Stack AI:</strong> Integrating Vector Databases (Faiss/pgvector) with Django backends.</li>
                                 <li><strong>Vision Pipelines:</strong> From OpenCV pre-processing to VLM inference.</li>
                                 <li><strong>Cloud & Deploy:</strong> Containerization and scalable inference endpoints.</li>
                             </ul>
                         </div>
                     </div>
+                    
+                    <div class="click-hint text-xs text-gray-600 mt-4 uppercase tracking-widest transition-opacity duration-300 opacity-60 group-hover:opacity-100 group-hover:text-accent group-[.expanded]:opacity-0">
+                        [ + Click to Expand ]
+                    </div>
                 </div>
             </section>
 
-            <div class="projects-wrapper">
-                <div class="section-title-center">
-                    <h2>SELECTED WORKS</h2>
-                </div>
-
-                <article class="timeline-block left">
-                    <div class="card project-card">
-                        <div class="project-media">
-                            <img src="images/django1.gif" alt="Django App">
-                        </div>
-                        <div class="project-info">
-                            <h3>Django Web App</h3>
-                            <div class="tags"><span>RAG</span><span>Django</span><span>Faiss DB</span></div>
-                            <p>Next-gen web app with personalized workspaces and AI chat.</p>
-                            <div class="click-hint">[ + Click to Expand ]</div>
-                            <div class="description-placeholder">
-                                <div class="tech-details">
-                                    <p><strong>Repository:</strong> djnappnew | <strong>Architecture:</strong> Modular Django Monolith</p>
-                                    <br>
-                                    <p>A sophisticated RAG (Retrieval Augmented Generation) pipeline designed for document interaction.</p>
-                                    <ul>
-                                        <li><strong>Aweapp/:</strong> Core logic handling LLM interfacing and prompt engineering.</li>
-                                        <li><strong>fileupload/:</strong> Decoupled app for ingesting user documents (PDF/TXT) before indexing.</li>
-                                        <li><strong>register/:</strong> Isolated authentication system separating user management from AI logic.</li>
-                                    </ul>
-                                    <p><strong>Workflow:</strong> Login &rarr; Upload Document (saved to media/files) &rarr; Chat via Faiss Vector Retrieval.</p>
-                                </div>
-                            </div>
-                        </div>
-                    </div>
-                </article>
-
-                <article class="timeline-block right">
-                    <div class="card project-card">
-                        <div class="project-media">
-                            <img src="images/neat1.jpeg" alt="NEAT Pong">
-                        </div>
-                        <div class="project-info">
-                            <h3>NEAT RL (Pong)</h3>
-                            <div class="tags"><span>Reinforcement Learning</span><span>NEAT</span><span>Game AI</span></div>
-                            <p>Evolving neural network architectures to master Pong via natural selection.</p>
-                            <div class="click-hint">[ + Click to Expand ]</div>
-                            <div class="description-placeholder">
-                                <div class="tech-details">
-                                    <p><strong>Repository:</strong> PONG-GAME-ML-amal | <strong>Method:</strong> NeuroEvolution of Augmenting Topologies</p>
-                                    <br>
-                                    <p>An implementation of evolutionary algorithms where the AI agent learns to play Pong from scratch without pre-existing data.</p>
-                                    <ul>
-                                        <li><strong>Inputs:</strong> Ball Y-Coord, Paddle Y-Coord, Distance Delta.</li>
-                                        <li><strong>Outputs:</strong> 2 Output Neurons (UP / DOWN).</li>
-                                        <li><strong>Fitness Function:</strong> Agents are rewarded for hitting the ball and penalized for misses. "Dumb" networks die; succesful ones breed.</li>
-                                    </ul>
-                                </div>
-                            </div>
-                        </div>
-                    </div>
-                </article>
-
-                <article class="timeline-block left">
-                    <div class="card project-card">
-                        <div class="project-media">
-                            <img src="images/uploaded_section.png" alt="VLM Test">
-                        </div>
-                        <div class="project-info">
-                            <h3>VLM Moondream Test</h3>
-                            <div class="tags"><span>Computer Vision</span><span>Streamlit</span><span>OpenCV</span></div>
-                            <p>Advanced analysis using Moondream AI 0.5 with object overlays.</p>
-                            <div class="click-hint">[ + Click to Expand ]</div>
-                            <div class="description-placeholder">
-                                <div class="tech-details">
-                                    <p><strong>Repository:</strong> VLM_testing | <strong>Stack:</strong> Streamlit, PyTorch, OpenCV</p>
-                                    <br>
-                                    <p>An R&D Sandbox for benchmarking Small Language Models (SLMs) on vision tasks.</p>
-                                    <ul>
-                                        <li><strong>Benchmarking:</strong> Parallel testing of Moondream, SmolVLM, and Janus models.</li>
-                                        <li><strong>Visual Feedback:</strong> Programmatic drawing of bounding boxes on video frames using OpenCV based on AI coordinate outputs.</li>
-                                        <li><strong>UI:</strong> Streamlit-based interface (moondream_ui.py) for rapid prototyping and testing.</li>
-                                    </ul>
-                                </div>
-                            </div>
-                        </div>
-                    </div>
-                </article>
+            <!-- PROJECTS HEADER -->
+            <div class="text-center mb-20 mt-24">
+                <h2 class="font-head text-4xl text-white">SELECTED WORKS</h2>
             </div>
+
+            <!-- PROJECT 1: DJANGO -->
+            <article id="django-app" class="timeline-block flex mb-36 w-full px-5 justify-start md:pl-[10%] md:pr-[55%]">
+                <div class="card project-card w-full backdrop-blur-xl bg-black/85 border border-white/10 transition-all duration-400 relative z-20 overflow-hidden cursor-pointer hover:-translate-y-2 hover:border-white/40 group p-0" data-fuse-target="true">
+                    <div class="w-full h-64 overflow-hidden relative">
+                        <img src="images/django1.gif" alt="Django Web App" class="w-full h-full object-cover filter grayscale transition-all duration-500 group-hover:grayscale-0">
+                        <div class="absolute inset-0 bg-gradient-to-t from-black/80 to-transparent pointer-events-none"></div>
+                    </div>
+                    <div class="p-8">
+                        <h3 class="font-head text-2xl mb-4 text-white transition-all duration-300">Django Web App</h3>
+                        <div class="flex flex-wrap gap-2 mb-4">
+                            <span class="inline-block text-xs bg-[#222] text-gray-400 px-2 py-1">RAG</span>
+                            <span class="inline-block text-xs bg-[#222] text-gray-400 px-2 py-1">Django</span>
+                            <span class="inline-block text-xs bg-[#222] text-gray-400 px-2 py-1">Faiss DB</span>
+                        </div>
+                        <p class="text-gray-400 text-lg mb-2">Next-gen web app with personalized workspaces and AI chat.</p>
+                        
+                        <div class="click-hint text-xs text-gray-600 mt-2 uppercase tracking-widest transition-opacity duration-300 opacity-60 group-hover:opacity-100 group-hover:text-accent group-[.expanded]:opacity-0">
+                            [ + Click to Expand ]
+                        </div>
+
+                        <div class="expand-content max-h-0 opacity-0 overflow-hidden border-t border-transparent mt-0 pt-0">
+                            <div class="text-sm text-gray-300 space-y-4 mt-6 border-t border-accent/30 pt-6">
+                                <p><strong class="text-white">Repository:</strong> djnappnew <span class="mx-2 text-accent">|</span> <strong class="text-white">Architecture:</strong> Modular Django Monolith</p>
+                                <ul class="list-disc pl-5 space-y-2 text-gray-400">
+                                    <li>Aweapp/: Core logic handling LLM interfacing and prompt engineering.</li>
+                                    <li>fileupload/: Decoupled app for ingesting user documents (PDF/TXT) before indexing.</li>
+                                    <li>register/: Isolated authentication system separating user management from AI logic.</li>
+                                </ul>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </article>
+
+            <!-- PROJECT 2: PONG -->
+            <article id="Neatping" class="timeline-block flex mb-36 w-full px-5 justify-end md:pr-[10%] md:pl-[55%]">
+                <div class="card project-card w-full backdrop-blur-xl bg-black/85 border border-white/10 transition-all duration-400 relative z-20 overflow-hidden cursor-pointer hover:-translate-y-2 hover:border-white/40 group p-0" data-fuse-target="true">
+                    <div class="w-full h-64 overflow-hidden relative">
+                        <img src="images/neatping1.gif" alt="Pong Automation" class="w-full h-full object-cover filter grayscale transition-all duration-500 group-hover:grayscale-0">
+                        <div class="absolute inset-0 bg-gradient-to-t from-black/80 to-transparent pointer-events-none"></div>
+                    </div>
+                    <div class="p-8">
+                        <h3 class="font-head text-2xl mb-4 text-white transition-all duration-300">Pong Game Automation</h3>
+                        <div class="flex flex-wrap gap-2 mb-4">
+                            <span class="inline-block text-xs bg-[#222] text-gray-400 px-2 py-1">RL</span>
+                            <span class="inline-block text-xs bg-[#222] text-gray-400 px-2 py-1">NEAT</span>
+                            <span class="inline-block text-xs bg-[#222] text-gray-400 px-2 py-1">Python</span>
+                        </div>
+                        <p class="text-gray-400 text-lg mb-2">Self-playing Pong game using NEAT to evolve optimal paddle behavior.</p>
+                        
+                        <div class="click-hint text-xs text-gray-600 mt-2 uppercase tracking-widest transition-opacity duration-300 opacity-60 group-hover:opacity-100 group-hover:text-accent group-[.expanded]:opacity-0">
+                            [ + Click to Expand ]
+                        </div>
+
+                        <div class="expand-content max-h-0 opacity-0 overflow-hidden border-t border-transparent mt-0 pt-0">
+                            <div class="text-sm text-gray-300 space-y-4 mt-6 border-t border-accent/30 pt-6">
+                                <p><strong class="text-white">Repository:</strong> Pong Game ML Repository <span class="mx-2 text-accent">|</span> <strong class="text-white">Stack:</strong> Python, NEAT-python</p>
+                                <ul class="list-disc pl-5 space-y-2 text-gray-400">
+                                    <li>Historical Markings: Tracking gene origin to prevent redundant structures.</li>
+                                    <li>Speciation: Grouping similar networks to encourage diversity.</li>
+                                    <li>Incremental Growth: Starting simple and adding complexity over time.</li>
+                                </ul>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </article>
+
+            <!-- PROJECT 3: VLM TEST -->
+            <article id="vlm-test" class="timeline-block flex mb-36 w-full px-5 justify-start md:pl-[10%] md:pr-[55%]">
+                <div class="card project-card w-full backdrop-blur-xl bg-black/85 border border-white/10 transition-all duration-400 relative z-20 overflow-hidden cursor-pointer hover:-translate-y-2 hover:border-white/40 group p-0" data-fuse-target="true">
+                    <div class="w-full h-64 overflow-hidden relative">
+                        <img src="images/uploaded_section.png" alt="VLM Test" class="w-full h-full object-cover filter grayscale transition-all duration-500 group-hover:grayscale-0">
+                        <div class="absolute inset-0 bg-gradient-to-t from-black/80 to-transparent pointer-events-none"></div>
+                    </div>
+                    <div class="p-8">
+                        <h3 class="font-head text-2xl mb-4 text-white transition-all duration-300">VLM Moondream Test</h3>
+                        <div class="flex flex-wrap gap-2 mb-4">
+                            <span class="inline-block text-xs bg-[#222] text-gray-400 px-2 py-1">Computer Vision</span>
+                            <span class="inline-block text-xs bg-[#222] text-gray-400 px-2 py-1">Streamlit</span>
+                            <span class="inline-block text-xs bg-[#222] text-gray-400 px-2 py-1">OpenCV</span>
+                        </div>
+                        <p class="text-gray-400 text-lg mb-2">Advanced analysis using Moondream AI 0.5 with object overlays.</p>
+                        
+                        <div class="click-hint text-xs text-gray-600 mt-2 uppercase tracking-widest transition-opacity duration-300 opacity-60 group-hover:opacity-100 group-hover:text-accent group-[.expanded]:opacity-0">
+                            [ + Click to Expand ]
+                        </div>
+
+                        <div class="expand-content max-h-0 opacity-0 overflow-hidden border-t border-transparent mt-0 pt-0">
+                            <div class="text-sm text-gray-300 space-y-4 mt-6 border-t border-accent/30 pt-6">
+                                <p><strong class="text-white">Repository:</strong> VLM_testing <span class="mx-2 text-accent">|</span> <strong class="text-white">Stack:</strong> Streamlit, PyTorch, OpenCV</p>
+                                <ul class="list-disc pl-5 space-y-2 text-gray-400">
+                                    <li>Benchmarking: Parallel testing of Moondream, SmolVLM, and Janus models.</li>
+                                    <li>Visual Feedback: Programmatic drawing of bounding boxes on video frames using OpenCV.</li>
+                                    <li>UI: Streamlit-based interface for rapid prototyping.</li>
+                                </ul>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </article>
+
+            <!-- PROJECT 4: NEAT STOCK -->
+            <article id="NEAT" class="timeline-block flex mb-36 w-full px-5 justify-end md:pr-[10%] md:pl-[55%]">
+                <div class="card project-card w-full backdrop-blur-xl bg-black/85 border border-white/10 transition-all duration-400 relative z-20 overflow-hidden cursor-pointer hover:-translate-y-2 hover:border-white/40 group p-0" data-fuse-target="true">
+                    <div class="w-full h-64 overflow-hidden relative flex">
+                        <img src="images/neat1.jpeg" alt="Stock Prediction 1" class="w-1/2 h-full object-cover filter grayscale transition-all duration-500 group-hover:grayscale-0">
+                        <img src="images/neat2.jpeg" alt="Stock Prediction 2" class="w-1/2 h-full object-cover filter grayscale transition-all duration-500 group-hover:grayscale-0">
+                        <div class="absolute inset-0 bg-gradient-to-t from-black/80 to-transparent pointer-events-none"></div>
+                    </div>
+                    <div class="p-8">
+                        <h3 class="font-head text-2xl mb-4 text-white transition-all duration-300">Stock Trend Prediction</h3>
+                        <div class="flex flex-wrap gap-2 mb-4">
+                            <span class="inline-block text-xs bg-[#222] text-gray-400 px-2 py-1">NEAT</span>
+                            <span class="inline-block text-xs bg-[#222] text-gray-400 px-2 py-1">Finance</span>
+                            <span class="inline-block text-xs bg-[#222] text-gray-400 px-2 py-1">Time Series</span>
+                        </div>
+                        <p class="text-gray-400 text-lg mb-2">Exploratory project using NEAT to predict stock trends (TSLA) via evolution.</p>
+                        
+                        <div class="click-hint text-xs text-gray-600 mt-2 uppercase tracking-widest transition-opacity duration-300 opacity-60 group-hover:opacity-100 group-hover:text-accent group-[.expanded]:opacity-0">
+                            [ + Click to Expand ]
+                        </div>
+
+                        <div class="expand-content max-h-0 opacity-0 overflow-hidden border-t border-transparent mt-0 pt-0">
+                            <div class="text-sm text-gray-300 space-y-4 mt-6 border-t border-accent/30 pt-6">
+                                <p><strong class="text-white">Repository:</strong> NEAT Stock Prediction <span class="mx-2 text-accent">|</span> <strong class="text-white">Stack:</strong> Python, NEAT-python, Pandas</p>
+                                <ul class="list-disc pl-5 space-y-2 text-gray-400">
+                                    <li>Input: Previous day's OHLC (Open, High, Low, Close) data.</li>
+                                    <li>Method: Evolving neural network architectures automatically to find optimal configurations.</li>
+                                    <li>Skills Applied: NEAT principles, data preprocessing/feature engineering for finance.</li>
+                                </ul>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </article>
+
         </div>
 
-        <footer id="contact">
-            <div class="footer-glow-bg"></div>
-            <div class="container footer-content">
-                <h2 class="giant-text">LET'S BUILD<br>THE IMPOSSIBLE.</h2>
-                <div class="contact-grid">
-                    <div class="contact-col">
-                        <span class="lbl">EMAIL</span>
-                        <a href="mailto:amalbmat2001@gmail.com">amalbmat2001@gmail.com</a>
+        <!-- FOOTER -->
+        <footer id="contact" class="relative py-32 text-center overflow-hidden z-20 bg-bg border-t border-[#222] group">
+            <div class="detonation-glow absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 bg-[radial-gradient(circle,rgba(255,42,42,0.8)_0%,rgba(0,0,0,0)_70%)] -z-10 pointer-events-none"></div>
+
+            <div class="container mx-auto px-4 max-w-[1200px]">
+                <h2 id="giant-text" class="font-head text-5xl md:text-7xl mb-16 transition-all duration-300 text-text">
+                    LET'S BUILD<br>THE IMPOSSIBLE.
+                </h2>
+
+                <div class="grid grid-cols-1 md:grid-cols-3 gap-8 border-t border-[#222] pt-12 mb-12">
+                    <div class="flex flex-col items-center">
+                        <span class="text-xs text-gray-600 mb-2 tracking-widest">EMAIL</span>
+                        <a href="mailto:amalbmat2001@gmail.com" class="text-lg text-white hover:text-accent transition-colors flex items-center gap-2">
+                            amalbmat2001@gmail.com
+                        </a>
                     </div>
-                    <div class="contact-col">
-                        <span class="lbl">PHONE</span>
-                        <a href="tel:+919188458610">+91 9188458610</a>
+                    <div class="flex flex-col items-center">
+                        <span class="text-xs text-gray-600 mb-2 tracking-widest">PHONE</span>
+                        <a href="tel:+919188458610" class="text-lg text-white hover:text-accent transition-colors flex items-center gap-2">
+                            +91 9188458610
+                        </a>
                     </div>
-                    <div class="contact-col">
-                        <span class="lbl">SOCIAL</span>
-                        <div class="socials">
-                            <a href="https://www.linkedin.com/in/amal-mathews/" target="_blank">LinkedIn</a>
-                            <a href="https://github.com/Amal-Baby-Mathews" target="_blank">GitHub</a>
+                    <div class="flex flex-col items-center">
+                        <span class="text-xs text-gray-600 mb-2 tracking-widest">SOCIAL</span>
+                        <div class="flex gap-6">
+                            <a href="https://www.linkedin.com/in/amal-mathews/" target="_blank" class="text-white hover:text-accent transition-colors">LinkedIn</a>
+                            <a href="https://github.com/Amal-Baby-Mathews" target="_blank" class="text-white hover:text-accent transition-colors">GitHub</a>
                         </div>
                     </div>
                 </div>
-                <div class="copyright">
+
+                <div class="text-gray-600 text-sm">
                     © 2025 Amal Baby Mathews.
                 </div>
             </div>
         </footer>
+
     </main>
 
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.2/gsap.min.js"></script>
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.2/ScrollTrigger.min.js"></script>
-    
+    <!-- LOGIC SCRIPT -->
     <script>
         document.addEventListener("DOMContentLoaded", () => {
             gsap.registerPlugin(ScrollTrigger);
-
-            // Slightly bigger spark as requested
-            const SPARK_SCALE = 2.2; 
-
+            
+            // --- CONSTANTS & REFS ---
+            const SPARK_SCALE = 2.2;
             const svg = document.querySelector("#main-svg");
-            const visualEngine = document.querySelector(".visual-engine");
+            const engineContainer = document.querySelector("#visual-engine");
             const fuseBurnt = document.querySelector("#fuse-burnt");
             const fuseUnburnt = document.querySelector("#fuse-unburnt");
             const sparkGroup = document.querySelector("#spark-assembly");
+            const particleEmitter = document.querySelector("#particle-emitter");
             const footer = document.querySelector("#contact");
-            const targetText = document.querySelector(".giant-text"); 
+            const giantText = document.querySelector("#giant-text");
             
-            // Interaction: Card Expansion
-            const allCards = document.querySelectorAll('.card');
-            
-            allCards.forEach(card => {
+            // --- CARD EXPANSION LOGIC ---
+            const cards = document.querySelectorAll('.card');
+            cards.forEach(card => {
                 card.addEventListener('click', (e) => {
-                    // Toggle expanded class
+                    const content = card.querySelector('.expand-content');
+                    if(!content) return;
+
                     const isExpanded = card.classList.contains('expanded');
                     
-                    // Close others (optional, feels cleaner)
-                    allCards.forEach(c => c.classList.remove('expanded'));
+                    // Close all others
+                    cards.forEach(c => {
+                        c.classList.remove('expanded');
+                        const cc = c.querySelector('.expand-content');
+                        if(cc) {
+                            cc.style.maxHeight = '0px';
+                            cc.style.opacity = '0';
+                            cc.style.marginTop = '0px';
+                            cc.style.paddingTop = '0px';
+                            cc.parentElement.style.backgroundColor = ''; // Reset bg
+                        }
+                    });
 
+                    // Toggle current
                     if (!isExpanded) {
                         card.classList.add('expanded');
+                        content.style.maxHeight = '1200px';
+                        content.style.opacity = '1';
+                        content.style.marginTop = '1.5rem';
+                        content.style.paddingTop = '1.5rem';
+                        content.style.borderTopColor = 'rgba(255, 42, 42, 0.3)';
+                        card.style.backgroundColor = 'rgba(15, 15, 15, 0.95)';
+                    } else {
+                        card.style.backgroundColor = '';
                     }
-                    
-                    // CRITICAL: The expansion changes the page height and element positions.
-                    // The wire path needs to update *while* the transition happens, 
-                    // otherwise the spark will look detached until the transition ends.
-                    
-                    // Run a loop for 600ms (duration of css transition + buffer)
-                    let start = performance.now();
-                    function animateLayoutUpdate() {
-                        const now = performance.now();
-                        if (now - start < 600) {
-                            updateMetrics();
-                            requestAnimationFrame(animateLayoutUpdate);
-                        } else {
-                            // Final update to be sure
-                            updateMetrics();
-                        }
-                    }
-                    requestAnimationFrame(animateLayoutUpdate);
+
+                    // Trigger resize loop to update fuse path
+                    let count = 0;
+                    const interval = setInterval(() => {
+                        updateMetrics();
+                        count++;
+                        if (count > 20) clearInterval(interval);
+                    }, 30);
                 });
             });
 
-            let screenW, screenH, totalDocHeight, centerX;
-            let pathTotalLength = 0;
+            // --- SPARK PARTICLES ---
+            const density = 40;
+            const ns = "http://www.w3.org/2000/svg";
             
-            let ignitionPoints = [];
+            for (let i = 0; i < density; i++) {
+                const rayGroup = document.createElementNS(ns, "g");
+                const angle = (360 / density) * i;
+                gsap.set(rayGroup, { rotation: angle });
 
-            // =============================================
-            // 1. DYNAMIC PATH CALCULATION & TRIGGER MAPPING
-            // =============================================
-            function updateMetrics() {
-                screenW = window.innerWidth;
-                screenH = window.innerHeight;
-                totalDocHeight = document.body.scrollHeight;
-                centerX = screenW / 2;
-                
-                ignitionPoints = [];
+                const line = document.createElementNS(ns, "line");
+                line.setAttribute("x1", 2 * SPARK_SCALE); line.setAttribute("y1", 0);
+                line.setAttribute("x2", 8 * SPARK_SCALE); line.setAttribute("y2", 0);
+                line.setAttribute("stroke", i % 2 === 0 ? "#fff" : "#ffaa00");
+                line.setAttribute("stroke-width", (0.5 + Math.random()) * SPARK_SCALE);
+                line.setAttribute("stroke-linecap", "round");
+                line.style.opacity = 0;
+                rayGroup.appendChild(line);
 
-                visualEngine.style.height = totalDocHeight + 'px';
-                svg.setAttribute("viewBox", `0 0 ${screenW} ${totalDocHeight}`);
-                
-                let points = [{x: centerX, y: 0}];
+                const ember = document.createElementNS(ns, "circle");
+                ember.setAttribute("r", (0.4 + Math.random() * 0.4) * SPARK_SCALE);
+                ember.setAttribute("fill", i % 3 === 0 ? "#ff4400" : "#ffcc00");
+                ember.style.opacity = 0;
+                rayGroup.appendChild(ember);
 
-                // Hero
-                const heroSection = document.querySelector('#hero');
-                const heroImgBox = document.querySelector('#hero-img-box');
-                if(heroSection) {
-                    points.push({x: centerX, y: heroSection.offsetHeight});
-                    
-                    if(heroImgBox) {
-                        const rect = heroImgBox.getBoundingClientRect();
-                        const absY = rect.top + window.scrollY;
-                        ignitionPoints.push({
-                            element: heroImgBox,
-                            y: absY + (rect.height / 2), 
-                            type: 'card'
-                        });
-                    }
-                }
+                particleEmitter.appendChild(rayGroup);
 
-                // Cards
-                const blocks = document.querySelectorAll('.timeline-block .card'); 
-                blocks.forEach(card => {
-                    const rect = card.getBoundingClientRect();
-                    const absoluteY = rect.top + window.scrollY;
-                    const centerY = absoluteY + (rect.height / 2);
-                    const cardCenterX = rect.left + (rect.width / 2);
+                const delay = Math.random() * 0.5;
 
-                    points.push({x: cardCenterX, y: centerY});
-
-                    ignitionPoints.push({
-                        element: card,
-                        y: absoluteY, // Trigger at top edge
-                        type: 'card'
+                // Blast lines
+                gsap.timeline({ repeat: -1, delay: delay, repeatRefresh: true })
+                    .to(line, {
+                        attr: { x2: () => (14 + Math.random() * 18) * SPARK_SCALE },
+                        strokeDasharray: 20 * SPARK_SCALE, strokeDashoffset: 0,
+                        opacity: () => 0.7 + Math.random() * 0.3,
+                        duration: () => 0.05 + Math.random() * 0.1, ease: "power2.out"
+                    })
+                    .to(line, {
+                        strokeDashoffset: -20 * SPARK_SCALE, opacity: 0, duration: () => 0.05 + Math.random() * 0.1,
                     });
-                });
 
-                // Footer
-                const footerSection = document.querySelector('#contact');
-                if(footerSection) {
-                    const footerY = footerSection.getBoundingClientRect().top + window.scrollY;
-                    points.push({x: centerX, y: footerY});
-                    points.push({x: centerX, y: totalDocHeight}); 
-                }
-
-                let d = `M ${points[0].x},${points[0].y}`;
-                for(let i=1; i<points.length; i++) {
-                    d += ` L ${points[i].x},${points[i].y}`;
-                }
-
-                fuseUnburnt.setAttribute("d", d);
-                pathTotalLength = fuseUnburnt.getTotalLength();
-                fuseBurnt.setAttribute("d", generateJaggedPathFromPoints(points));
-
-                fuseUnburnt.style.strokeDasharray = "1 1";
-                fuseUnburnt.style.strokeDashoffset = "0";
+                // Flying embers
+                gsap.timeline({ repeat: -1, delay: delay, repeatRefresh: true })
+                    .set(ember, { x: 0, y: 0, opacity: 1, scale: 1 })
+                    .to(ember, {
+                        x: () => (25 + Math.random() * 35) * SPARK_SCALE,
+                        y: () => (-15 + Math.random() * 30) * SPARK_SCALE,
+                        opacity: 0, scale: 0, duration: () => 0.3 + Math.random() * 0.5, ease: "power1.out"
+                    });
             }
+
+            // Pulse Core
+            gsap.to("#spark-core", { scale: 1.3, opacity: 0.9, duration: 0.05, repeat: -1, yoyo: true });
+            gsap.to("#spark-halo", { scale: 1.6, opacity: 0.6, duration: 0.1, repeat: -1, yoyo: true });
+
+            // --- VISUAL ENGINE LOGIC ---
+            let pathTotalLength = 0;
+            let ignitionPoints = [];
 
             function generateJaggedPathFromPoints(points) {
                 let d = `M ${points[0].x},${points[0].y}`;
@@ -607,88 +580,78 @@
                 return d;
             }
 
-            // Observe resize events
-            const resizeObserver = new ResizeObserver(entries => {
-                requestAnimationFrame(() => {
-                    updateMetrics();
-                    ScrollTrigger.refresh();
+            function updateMetrics() {
+                const screenW = window.innerWidth;
+                const totalDocHeight = document.body.scrollHeight; // Vanilla JS safe height
+                const centerX = screenW / 2;
+
+                ignitionPoints = [];
+
+                engineContainer.style.height = totalDocHeight + 'px';
+                svg.setAttribute("viewBox", `0 0 ${screenW} ${totalDocHeight}`);
+
+                const points = [{x: centerX, y: 0}];
+
+                // 1. Hero
+                const heroSection = document.getElementById('hero');
+                const heroImgBox = document.getElementById('hero-img-box');
+                if (heroSection) {
+                    points.push({x: centerX, y: heroSection.offsetHeight});
+                    if (heroImgBox) {
+                        const rect = heroImgBox.getBoundingClientRect();
+                        const absY = rect.top + window.scrollY;
+                        ignitionPoints.push({ element: heroImgBox, y: absY + (rect.height / 2) });
+                    }
+                }
+
+                // 2. Cards
+                const targets = document.querySelectorAll('[data-fuse-target="true"]');
+                targets.forEach((el) => {
+                    const rect = el.getBoundingClientRect();
+                    const absoluteY = rect.top + window.scrollY;
+                    const centerY = absoluteY + (rect.height / 2);
+                    const cardCenterX = rect.left + (rect.width / 2);
+                    points.push({x: cardCenterX, y: centerY});
+                    ignitionPoints.push({ element: el, y: absoluteY });
                 });
-            });
-            resizeObserver.observe(document.body);
 
-            window.onload = () => {
-                updateMetrics();
-                ScrollTrigger.refresh();
-            };
+                // 3. Footer
+                if (footer) {
+                    const footerRect = footer.getBoundingClientRect();
+                    const footerY = footerRect.top + window.scrollY;
+                    points.push({x: centerX, y: footerY});
+                    points.push({x: centerX, y: totalDocHeight}); 
+                }
 
-            // =============================================
-            // 2. ENHANCED SPARK ANIMATION
-            // =============================================
-            const density = 40; // High density for realism
+                // Generate Paths
+                let d = `M ${points[0].x},${points[0].y}`;
+                for(let i=1; i<points.length; i++) {
+                    d += ` L ${points[i].x},${points[i].y}`;
+                }
 
-            const particleEmitter = document.querySelector("#particle-emitter");
-            while (particleEmitter.firstChild) { particleEmitter.removeChild(particleEmitter.firstChild); }
-
-            // Create Spark Particles
-            for (let i = 0; i < density; i++) {
-                const rayGroup = document.createElementNS("http://www.w3.org/2000/svg", "g");
-                const angle = (360 / density) * i;
-                gsap.set(rayGroup, { rotation: angle });
+                fuseUnburnt.setAttribute("d", d);
+                pathTotalLength = fuseUnburnt.getTotalLength();
+                fuseBurnt.setAttribute("d", generateJaggedPathFromPoints(points));
                 
-                const line = document.createElementNS("http://www.w3.org/2000/svg", "line");
-                line.setAttribute("x1", 2 * SPARK_SCALE); line.setAttribute("y1", 0);
-                line.setAttribute("x2", 8 * SPARK_SCALE); line.setAttribute("y2", 0);
-                line.setAttribute("stroke", i % 2 === 0 ? "#fff" : "#ffaa00"); 
-                line.setAttribute("stroke-width", (0.5 + Math.random()) * SPARK_SCALE); 
-                line.setAttribute("stroke-linecap", "round"); 
-                line.style.opacity = 0;
-                rayGroup.appendChild(line);
+                // IMPORTANT: use px units for CSS
+                fuseUnburnt.style.strokeDasharray = `${pathTotalLength}px`;
 
-                const ember = document.createElementNS("http://www.w3.org/2000/svg", "circle");
-                ember.setAttribute("r", (0.4 + Math.random() * 0.4) * SPARK_SCALE); 
-                ember.setAttribute("fill", i % 3 === 0 ? "#ff4400" : "#ffcc00"); 
-                ember.style.opacity = 0;
-                rayGroup.appendChild(ember);
+                // Calculate initial position to prevent jump
+                const maxScroll = Math.max(1, totalDocHeight - window.innerHeight);
+                const progress = Math.min(Math.max(window.scrollY / maxScroll, 0), 1);
+                
+                // Set initial offset and position
+                fuseUnburnt.style.strokeDashoffset = `-${progress * pathTotalLength}px`;
+                const startPoint = fuseUnburnt.getPointAtLength(progress * pathTotalLength);
+                sparkGroup.setAttribute("transform", `translate(${startPoint.x}, ${startPoint.y})`);
+                
+                // Reveal spark now that it's positioned
+                sparkGroup.style.opacity = "1";
 
-                particleEmitter.appendChild(rayGroup);
-
-                const delay = Math.random() * 0.5;
-
-                // Randomize blast lines
-                gsap.timeline({ repeat: -1, delay: delay, repeatRefresh: true })
-                    .to(line, {
-                        attr: { x2: () => (14 + Math.random() * 18) * SPARK_SCALE }, 
-                        strokeDasharray: 20 * SPARK_SCALE, strokeDashoffset: 0,
-                        opacity: () => 0.7 + Math.random() * 0.3,
-                        duration: () => 0.05 + Math.random() * 0.1, ease: "power2.out"
-                    })
-                    .to(line, {
-                        strokeDashoffset: -20 * SPARK_SCALE, opacity: 0, duration: () => 0.05 + Math.random() * 0.1,
-                    });
-
-                // Randomize flying embers
-                gsap.timeline({ repeat: -1, delay: delay, repeatRefresh: true })
-                    .set(ember, { x: 0, y: 0, opacity: 1, scale: 1 })
-                    .to(ember, {
-                        x: () => (25 + Math.random() * 35) * SPARK_SCALE,
-                        y: () => (-15 + Math.random() * 30) * SPARK_SCALE,
-                        opacity: 0, scale: 0, duration: () => 0.3 + Math.random() * 0.5, ease: "power1.out"
-                    });
+                ScrollTrigger.refresh();
             }
 
-            // Pulse core
-            gsap.to("#spark-core", {
-                scale: 1.3, opacity: 0.9,
-                duration: 0.05, repeat: -1, yoyo: true
-            });
-            gsap.to("#spark-halo", {
-                scale: 1.6, opacity: 0.6,
-                duration: 0.1, repeat: -1, yoyo: true
-            });
-
-            // =============================================
-            // 3. LOGIC LOOP
-            // =============================================
+            // --- ANIMATION LOOP ---
             ScrollTrigger.create({
                 trigger: "body",
                 start: "top top",
@@ -699,11 +662,13 @@
                     const point = fuseUnburnt.getPointAtLength(progress * pathTotalLength);
                     
                     sparkGroup.setAttribute("transform", `translate(${point.x}, ${point.y})`);
-                    fuseUnburnt.style.strokeDashoffset = -progress;
+                    
+                    // The Fix: Adding 'px' ensures the browser renders the offset correctly
+                    fuseUnburnt.style.strokeDashoffset = `-${progress * pathTotalLength}px`;
 
                     const currentSparkY = point.y;
 
-                    // Light up sections when passed
+                    // Ignite Elements
                     ignitionPoints.forEach(trigger => {
                         if (currentSparkY > trigger.y) {
                             if (!trigger.element.classList.contains('ignited')) {
@@ -716,9 +681,9 @@
                         }
                     });
 
-                    // Footer detonation
-                    if(targetText) {
-                        const textRect = targetText.getBoundingClientRect();
+                    // Footer Detonation
+                    if(giantText && footer) {
+                        const textRect = giantText.getBoundingClientRect();
                         const absoluteTriggerY = textRect.top + window.scrollY + 50;
 
                         if (currentSparkY >= absoluteTriggerY) {
@@ -731,14 +696,27 @@
             });
 
             // Entrance Animations
-            gsap.utils.toArray(".timeline-block").forEach(block => {
-                gsap.from(block.querySelector(".card"), {
-                    y: 50, opacity: 0, duration: 1, ease: "power3.out",
-                    scrollTrigger: {
-                        trigger: block, start: "top 85%", toggleActions: "play none none reverse"
-                    }
-                });
+            const blocks = document.querySelectorAll('.timeline-block');
+            blocks.forEach(block => {
+                const card = block.querySelector('.card');
+                if(card) {
+                    gsap.from(card, {
+                        y: 50, opacity: 0, duration: 1, ease: "power3.out",
+                        scrollTrigger: {
+                            trigger: block, start: "top 85%", toggleActions: "play none none reverse"
+                        }
+                    });
+                }
             });
+
+            // Init
+            updateMetrics();
+            const resizeObserver = new ResizeObserver(() => {
+                requestAnimationFrame(updateMetrics);
+            });
+            resizeObserver.observe(document.body);
+            // Backup init for fonts loading
+            setTimeout(updateMetrics, 500);
         });
     </script>
 </body>
