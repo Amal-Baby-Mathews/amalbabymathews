@@ -1,0 +1,77 @@
+Amal  Mathews
+
+Trivandrum, India 695017
+91 9188458610
+amalbmat2001@gmail.com
+WWW: https://amal-baby-mathews.github.io/amalbabymathews/
+
+Websites, Portfolios, Profiles
+
+https://www.linkedin.com/in/amal-mathews/
+https://github.com/Amal-Baby-Mathews
+
+Professional Summary
+
+Highly motivated AI Engineer with a track record of developing and deploying data-driven solutions. Skilled in wrangling, analyzing, and extracting insights from complex datasets. Successfully built and implemented machine learning models. Eager to leverage strong interpersonal and problem-solving skills in a challenging full-time position where I can continuously learn and contribute to impactful projects.
+
+Skills
+
+Data Science
+
+Machine Learning
+
+Python Programming
+
+Augmented Topology Neural Networks
+
+Feature Engineering
+
+Deep Learning
+
+Cloud services (AWS and Azure)
+
+Generative AI / Prompt Engineering
+
+MLOps
+
+Natural Language Processing / LLMs
+
+SQL/Postgresql
+
+HTML/CSS/JS
+
+Work History
+
+November 2023 - Current
+
+SEQATO - Technopark Phase 3, Trivandrum
+ML/AI Engineer
+
+Machine Learning Expertise:
+Designed and developed custom machine learning (ML) solutions tailored to client needs.
+Implemented time series forecasting models utilizing MLOps practices and procedures for efficient model development and deployment. 
+Natural Language Processing (NLP) Specialist:
+Employed techniques like Retrieval-Augmented Generation (RAG), Faiss for efficient similarity search, vector databases, SQL, and PostgreSQL for data management and manipulation.
+Integrated cloud technologies to enhance scalability and accessibility of NLP solutions. 
+Custom Model Development:  Successfully fine-tuned various models, including Large Language Models (LLMs) and cutting-edge image generation models like Stable Diffusion, to achieve optimal performance for specific tasks. 
+MLOps Advocate:  Spearheaded the adoption of MLOps practices to ensure the smooth and efficient serving of machine learning models in production environments. This included implementing processes for deployment, monitoring, and management, guaranteeing the reliability and performance of models at scale. 
+Leveraged cloud-based computing (AWS) resources for cost-effective model training and evaluation at scale. 
+Prototyped potential solutions using rapid experimentation methodologies, accelerating product development timelines. 
+
+Education
+
+August 2023
+Government Engineering College Barton Hill Trivandrum, Kerala
+Bachelor of Technology Electronics And Communications Engineering
+
+8.49 CGPA 
+Audio Keyword Detection (Malayalam), Designer and implementation - Major Project 
+
+Certifications
+
+AWS cloud practitioner certification 
+
+Supplementary Courses
+
+'TensorFlow 2.0: Deep Learning and Artificial Intelligence' on Udemy (02/02/2024). This course provides a comprehensive introduction to TensorFlow, a popular deep learning framework, and covers core deep learning concepts like neural networks, convolutional neural networks (CNNs), recurrent neural networks (RNNs), and more. Learned extensively about TensorFlow model serving.
+'The Complete Machine Learning Course with Python' on Udemy (07/29/2023). This extensive course explores various machine learning algorithms and techniques, including linear regression, decision trees, random forests, support vector machines (SVMs), and ensemble methods. It also provides practical experience with Python libraries like NumPy, Pandas, Scikit-learn, and Matplotlib.
